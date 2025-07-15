@@ -1,0 +1,27 @@
+﻿################################################################################
+# この .gitignore ファイルは Microsoft(R) Visual Studio によって自動的に作成されました。
+################################################################################
+
+/.vs
+/QrSorterInspectionApp/.vs
+/QrSorterInspectionApp/bin
+/QrSorterInspectionApp/obj
+/OPHISTORYLOG
+/Publish
+/QrSorterSimulatorApp/bin/Debug
+/QrSorterSimulatorApp/obj/Debug
+/QrSorterSimulatorApp/bin/Release
+/QrSorterSimulatorApp/obj/Release
+/NationalTaxInvestigationApp/obj/Debug/TempPE/Properties.Resources.Designer.cs.dll
+/NationalTaxInvestigationApp/obj/Debug/DesignTimeResolveAssemblyReferences.cache
+/NationalTaxInvestigationApp/obj/Debug/NationalTaxInvestigationApp.pdb
+/NationalTaxInvestigationApp/bin/Debug/NationalTaxInvestigationApp.application
+/NationalTaxInvestigationApp/obj/Debug/NationalTaxInvestigationApp.exe.manifest
+/NationalTaxInvestigationApp/obj/Debug/NationalTaxInvestigationApp.exe
+/NationalTaxInvestigationApp/obj/Debug/NationalTaxInvestigationApp.csproj.GenerateResource.cache
+/NationalTaxInvestigationApp/obj/Debug/NationalTaxInvestigationApp.application
+/NationalTaxInvestigationApp/bin/Debug/app.publish/NationalTaxInvestigationApp.exe
+/NationalTaxInvestigationApp/bin/Debug/NationalTaxInvestigationApp.exe
+/NationalTaxInvestigationApp/bin/Debug/NationalTaxInvestigationApp.exe.manifest
+/NationalTaxInvestigationApp/bin/Debug/NationalTaxInvestigationApp.pdb
+/NationalTaxInvestigationApp/bin/Debug/OPHISTORYLOG/操作履歴ログ_20250713.LOG
