@@ -7,7 +7,7 @@
     <ProjectGuid>{951FE5B2-DD7C-482B-A377-D9F0051D93AC}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>QrSorterInspectionApp</RootNamespace>
-    <AssemblyName>NationalTaxInvestigationApp</AssemblyName>
+    <AssemblyName>QrSorterForCensusApp</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

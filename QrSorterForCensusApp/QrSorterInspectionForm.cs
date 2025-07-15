@@ -86,7 +86,9 @@ namespace QrSorterInspectionApp
                 CmbMode.Items.Clear();
                 CmbMode.Items.Add("受付モード");
                 CmbMode.Items.Add("箱詰めモード");
-                CmbMode.SelectedIndex = 0;
+                CmbMode.SelectedIndex = 1;
+                //TxtBoxLabelNumber.Enabled = false;
+                //TxtInquiryNumber.Enabled = false;
 
                 #region OK履歴のヘッダー設定
                 // ListViewのカラムヘッダー設定
@@ -2241,7 +2243,7 @@ namespace QrSorterInspectionApp
             }
         }
 
-        private int iPreviousIndex = 0;
+        private int iPreviousIndex = 1;
 
         private void CmbMode_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -2252,6 +2254,7 @@ namespace QrSorterInspectionApp
             {
                 if (iPreviousIndex == CmbMode.SelectedIndex)
                 {
+                    // 前回値と同じなら何もせずに抜ける
                     return;
                 }
 
@@ -2285,6 +2288,111 @@ namespace QrSorterInspectionApp
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "【CmbMode_SelectedIndexChanged】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void TxtBoxLabelNumber_Enter(object sender, EventArgs e)
+        {
+            //try
+            //{
+            //    if (TxtBoxLabelNumber.Text.Length >= 5)
+            //    {
+            //        TxtCheckReading.Text = TxtBoxLabelNumber.Text.Substring(0, 5);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "【TxtBoxLabelNumber_Enter】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+        }
+
+        private void TxtBoxLabelNumber_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    string input = TxtBoxLabelNumber.Text;
+                    string firstFive = input.Length >= 5 ? input.Substring(0, 5) : input;
+                    TxtCheckReading.Text = firstFive;
+
+                    e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【TxtBoxLabelNumber_KeyDown】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void TxtQrReadData_Key(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    string input = TxtQrReadData.Text;
+                    string sCheckDigit = GetCheckDigit(input);
+                    TxtCheckReading.Text = $"チェックデジット：{sCheckDigit}";
+
+                    //string firstFive = input.Length >= 5 ? input.Substring(0, 5) : input;
+                    //TxtCheckReading.Text = firstFive;
+
+                    e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【TxtQrReadData_Key】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private string GetCheckDigit(string input)
+        {
+            string[] aryCheckDigit = new string[36] {"0","1","2","3","4","5","6","7","8","9",
+                                                     "A","B","C","D","E","F","G","H","I","J",
+                                                     "K","L","M","N","O","P","Q","R","S","T",
+                                                     "U","V","W","X","Y","Z"};
+            try
+            {
+                if (input.Length < 16)
+                {
+                    return input;
+                }
+                string s1 = input.Substring(0, 5);
+                string s2 = input.Substring(5, 4);
+                string s3 = input.Substring(9, 1);
+                string s4 = input.Substring(10, 2);
+                string s5 = input.Substring(12, 3);
+
+                int iTotal = int.Parse(s1) + int.Parse(s2) + int.Parse(s3) + int.Parse(s4) + int.Parse(s5);
+                int iMod = iTotal % 36;
+
+                return aryCheckDigit[iMod];
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【TxtQrReadData_Key】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "ERROR!!";
+            }
+        }
+
+        private void BtnJobChange_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DialogResult dialogResult = MessageBox.Show("JOBを切り替えますか？","確認",MessageBoxButtons.OKCancel,MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Cancel)
+                {
+                    return;
+                }
+                TxtBoxLabelNumber.Text = "";
+                TxtInquiryNumber.Text = "";
+                TxtCheckReading.Text = "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【BtnJobChange_Click】", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
