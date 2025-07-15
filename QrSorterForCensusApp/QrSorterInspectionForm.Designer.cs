@@ -118,16 +118,14 @@
             this.BtnClose = new System.Windows.Forms.Button();
             this.BtnStartInspection = new System.Windows.Forms.Button();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.CmbMode = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
             this.TxtBoxLabelNumber = new System.Windows.Forms.TextBox();
             this.TxtInquiryNumber = new System.Windows.Forms.TextBox();
             this.TxtCheckReading = new System.Windows.Forms.TextBox();
+            this.TxtQrReadData = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -903,6 +901,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.TxtQrReadData);
             this.groupBox1.Controls.Add(this.LblQrReadData);
             this.groupBox1.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.groupBox1.Location = new System.Drawing.Point(597, 231);
@@ -917,9 +916,9 @@
             this.LblQrReadData.BackColor = System.Drawing.Color.White;
             this.LblQrReadData.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.LblQrReadData.ForeColor = System.Drawing.Color.Black;
-            this.LblQrReadData.Location = new System.Drawing.Point(8, 19);
+            this.LblQrReadData.Location = new System.Drawing.Point(606, 19);
             this.LblQrReadData.Name = "LblQrReadData";
-            this.LblQrReadData.Size = new System.Drawing.Size(1161, 35);
+            this.LblQrReadData.Size = new System.Drawing.Size(555, 35);
             this.LblQrReadData.TabIndex = 324;
             this.LblQrReadData.Text = "123456789*123456789*123456789*123456789*123456789*123456789*123456789*123456789*1" +
     "23456789*123456789*123456789*123456789*12345678";
@@ -1223,18 +1222,6 @@
             this.pictureBox5.TabIndex = 288;
             this.pictureBox5.TabStop = false;
             // 
-            // label6
-            // 
-            this.label6.BackColor = System.Drawing.Color.White;
-            this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label6.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label6.ForeColor = System.Drawing.Color.Black;
-            this.label6.Location = new System.Drawing.Point(563, 51);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(20, 36);
-            this.label6.TabIndex = 351;
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // label11
             // 
             this.label11.BackColor = System.Drawing.Color.Transparent;
@@ -1285,30 +1272,6 @@
             this.button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // label12
-            // 
-            this.label12.BackColor = System.Drawing.Color.White;
-            this.label12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label12.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label12.ForeColor = System.Drawing.Color.Black;
-            this.label12.Location = new System.Drawing.Point(511, 51);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(20, 36);
-            this.label12.TabIndex = 354;
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label13
-            // 
-            this.label13.BackColor = System.Drawing.Color.White;
-            this.label13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label13.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label13.ForeColor = System.Drawing.Color.Black;
-            this.label13.Location = new System.Drawing.Point(537, 51);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(20, 36);
-            this.label13.TabIndex = 355;
-            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // TxtBoxLabelNumber
             // 
             this.TxtBoxLabelNumber.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1317,6 +1280,7 @@
             this.TxtBoxLabelNumber.Name = "TxtBoxLabelNumber";
             this.TxtBoxLabelNumber.Size = new System.Drawing.Size(333, 36);
             this.TxtBoxLabelNumber.TabIndex = 356;
+            this.TxtBoxLabelNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtBoxLabelNumber_KeyDown);
             // 
             // TxtInquiryNumber
             // 
@@ -1335,6 +1299,17 @@
             this.TxtCheckReading.Name = "TxtCheckReading";
             this.TxtCheckReading.Size = new System.Drawing.Size(333, 36);
             this.TxtCheckReading.TabIndex = 358;
+            this.TxtCheckReading.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtBoxLabelNumber_KeyDown);
+            // 
+            // TxtQrReadData
+            // 
+            this.TxtQrReadData.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TxtQrReadData.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.TxtQrReadData.Location = new System.Drawing.Point(13, 20);
+            this.TxtQrReadData.Name = "TxtQrReadData";
+            this.TxtQrReadData.Size = new System.Drawing.Size(555, 36);
+            this.TxtQrReadData.TabIndex = 359;
+            this.TxtQrReadData.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtQrReadData_Key);
             // 
             // QrSorterInspectionForm
             // 
@@ -1348,11 +1323,8 @@
             this.Controls.Add(this.TxtCheckReading);
             this.Controls.Add(this.TxtInquiryNumber);
             this.Controls.Add(this.TxtBoxLabelNumber);
-            this.Controls.Add(this.label13);
-            this.Controls.Add(this.label12);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.label6);
             this.Controls.Add(this.BtnTestCounter);
             this.Controls.Add(this.TxtTestCounter);
             this.Controls.Add(this.BtnRejectCounterClear);
@@ -1444,6 +1416,7 @@
             this.Text = "QRフィーダー＆ソーター検査画面";
             this.Load += new System.EventHandler(this.QrSorterInspectionForm_Load);
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
@@ -1545,15 +1518,13 @@
         private System.Windows.Forms.TextBox TxtTestCounter;
         private System.Windows.Forms.Button BtnTestCounter;
         internal System.Windows.Forms.Button BtnAllCounterClear;
-        internal System.Windows.Forms.Label label6;
         internal System.Windows.Forms.Label label11;
         private System.Windows.Forms.GroupBox groupBox2;
         internal System.Windows.Forms.ComboBox CmbMode;
         internal System.Windows.Forms.Button button1;
-        internal System.Windows.Forms.Label label12;
-        internal System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox TxtBoxLabelNumber;
         private System.Windows.Forms.TextBox TxtInquiryNumber;
         private System.Windows.Forms.TextBox TxtCheckReading;
+        private System.Windows.Forms.TextBox TxtQrReadData;
     }
 }
