@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -380,7 +381,9 @@ namespace QrSorterInspectionApp
                     LblBox3.Font = new Font("メイリオ", 48);
                     LblBox4.Font = new Font("メイリオ", 48);
                     LblBox5.Font = new Font("メイリオ", 48);
-                }                
+                }
+                //　
+                LoadingFixedJobFile();
             }
             catch (Exception ex)
             {
@@ -1875,6 +1878,77 @@ namespace QrSorterInspectionApp
             {
                 CommonModule.OutPutLogFile("【SerialPortBcr_DataReceived】" + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// 固定のジョブファイル（国勢調査用JOB設定.csv）の読込処理
+        /// </summary>
+        private void LoadingFixedJobFile()
+        {
+            try
+            {
+                // 固定の国勢調査用JOB設定ファイルを読み込み 
+                string sSelectedFile = CommonModule.IncludeTrailingPathDelimiter(Application.StartupPath) + @"国勢調査用JOB設定.csv";
+
+                string[] sArray = sSelectedFile.Split('\\');
+                // ファイル名のみを表示する
+                LblSelectedFile.Text = sArray[sArray.Length - 1];
+
+                // ジョブ登録情報及びグループ１～５情報の読取り
+                CommonModule.ReadJobEntryListFile(sSelectedFile);
+                // 登録ジョブ項目を取得し表示
+                GetEntryInfoAndDisplay();
+                // 受領日
+                DtpDateReceipt.Enabled = bDateOfReceipt;
+                // 「検査開始」ボタン使用可
+                BtnStartInspection.Enabled = true;
+                // 「設定」ボタン使用可
+                BtnSetting.Enabled = true;
+                PubConstClass.sJobFileNameFromInspectionForm = sSelectedFile;
+                // JOB変更フラグON
+                bIsJobChange = true;
+                // 各表示カウンタクリア
+                LblTotalCount.Text = "0";
+                LblOKCount.Text = "0";
+                LblNGCount.Text = "0";
+                // ポケット１～５の表示カウンタクリア
+                LblBox1.Text = "0";
+                LblBox2.Text = "0";
+                LblBox3.Text = "0";
+                LblBox4.Text = "0";
+                LblBox5.Text = "0";
+                LblBoxEject.Text = "0";
+                // 内部カウンタのクリア
+                iOKCount = 0;               // OK用カウンタ
+                iNGCount = 0;               // NG用カウンタ
+                iBox1Count = 0;             // ボックス１用カウンタ
+                iBox2Count = 0;             // ボックス２用カウンタ
+                iBox3Count = 0;             // ボックス３用カウンタ
+                iBox4Count = 0;             // ボックス４用カウンタ
+                iBox5Count = 0;             // ボックス５用カウンタ
+                iBoxECount = 0;             // ボックス（Eject）用カウンタ
+                intOkSesanCounter = 0;      // OK処理数No.カウンタ
+                intNgSesanCounter = 0;      // NG処理数No.カウンタ
+                                            // 受信データ表示領域のクリア
+                LblPocket1.Text = "";
+                LblPocket2.Text = "";
+                LblPocket3.Text = "";
+                LblPocket4.Text = "";
+                LblPocket5.Text = "";
+                LblPocketEject.Text = "";
+                // OK履歴とNG履歴のクリア
+                LsvOKHistory.Items.Clear();
+                LsvNGHistory.Items.Clear();
+
+                // 過去に受信したQRデータ一覧のクリア
+                lstPastReceivedQrData.Clear();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【LoadingFixedJobFile】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        
         }
 
         /// <summary>
