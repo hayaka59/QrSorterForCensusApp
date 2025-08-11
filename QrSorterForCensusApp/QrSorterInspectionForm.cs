@@ -2391,6 +2391,7 @@ namespace QrSorterInspectionApp
                     TxtCheckReading.Text = firstFive;
 
                     e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
+                    TxtInquiryNumber.Focus();
                 }
             }
             catch (Exception ex)
@@ -2467,6 +2468,38 @@ namespace QrSorterInspectionApp
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "【BtnJobChange_Click】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void TxtInquiryNumber_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
+                    TxtCheckReading.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【TxtInquiryNumber_KeyDown】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void TxtCheckReading_KeyDown(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
+                    TxtBoxLabelNumber.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【TxtCheckReading_KeyDown】", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
