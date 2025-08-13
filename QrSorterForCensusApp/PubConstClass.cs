@@ -17,7 +17,9 @@ namespace QrSorterInspectionApp
         public const string CMD_SEND_d = "d";                                   // エラーリセットコマンド
         public const string CMD_SEND_e = "e";                                   // 動作不可コマンド
         public const string CMD_SEND_f = "f";                                   // ポケット投入条件情報コマンド        
-        public const string CMD_SEND_g = "g";                                   // 重複エラー発生コマンド
+        public const string CMD_SEND_g = "g";                                   // 重複エラー発生コマンド(g0,g1分類する)
+        public const string CMD_SEND_g0 = "g0";                                 // 重複エラー無しコマンド
+        public const string CMD_SEND_g1 = "g1";                                 // 重複エラー有りコマンド
         public const string CMD_SEND_h = "h";                                   // JOB選択コマンド
         public const string CMD_SEND_i = "i";                                   // アワーメータークリアコマンド
         public const string CMD_SEND_j = "j";                                   // トータルカウンタクリアコマンド

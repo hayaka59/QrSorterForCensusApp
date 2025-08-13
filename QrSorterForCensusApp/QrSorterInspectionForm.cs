@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -88,8 +89,11 @@ namespace QrSorterInspectionApp
                 CmbMode.Items.Add("受付モード");
                 CmbMode.Items.Add("箱詰めモード");
                 CmbMode.SelectedIndex = 1;
-                //TxtBoxLabelNumber.Enabled = false;
-                //TxtInquiryNumber.Enabled = false;
+
+
+                LblOffLine.Text = "箱詰めモード";
+                TxtBoxLabelNumber.Enabled = true;
+                TxtInquiryNumber.Enabled = true;
 
                 #region OK履歴のヘッダー設定
                 // ListViewのカラムヘッダー設定
@@ -1717,7 +1721,7 @@ namespace QrSorterInspectionApp
                 if (lstPastReceivedQrData.Count > 0)
                 {
                     #region 重複チェック
-                    if (bIsDuplicateCheck)
+                    if (!bIsDuplicateCheck)
                     {
                         Stopwatch sw = new Stopwatch();
                         sw.Start();
@@ -1728,20 +1732,29 @@ namespace QrSorterInspectionApp
                         {
                             CommonModule.OutPutLogFile($"【Lコマンド受信時】重複データ：{sQrData}");
                             // シリアルデータ送信（重複エラー発生）
-                            SendSerialData(PubConstClass.CMD_SEND_g);
+                            SendSerialData(PubConstClass.CMD_SEND_g1);
                         }
                         else
                         {
                             //CommonModule.OutPutLogFile($"最初のデータ：{lstPastReceivedQrData[0]}");
                             //CommonModule.OutPutLogFile($"最後のデータ：{lstPastReceivedQrData[lstPastReceivedQrData.Count - 1]}");                        
+                            // シリアルデータ送信（重複エラー発生）
+                            SendSerialData(PubConstClass.CMD_SEND_g0);
                         }
                         CommonModule.OutPutLogFile($"{lstPastReceivedQrData.Count:#,###,##0}件の検索処理時間: {sw.Elapsed.TotalMilliseconds}ミリ秒");
                     }
                     else
                     {
-                        CommonModule.OutPutLogFile($"重複チェック無し：{sQrData}");
+                        CommonModule.OutPutLogFile($"重複チェック無しモード：{sQrData}");
+                        // シリアルデータ送信（重複エラー発生）
+                        SendSerialData(PubConstClass.CMD_SEND_g0);
                     }
                     #endregion
+                }
+                else
+                {
+                    // シリアルデータ送信（重複エラー発生）
+                    SendSerialData(PubConstClass.CMD_SEND_g0);
                 }
             }
             catch (Exception ex)

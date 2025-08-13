@@ -1,5 +1,6 @@
 PORT 0
 PORT 2
+PORT 8
 PORT C
 PORT G
 CS 103
@@ -9,7 +10,6 @@ CS 106
 CS 107
 CS 108
 CS 109
-DIP SW
 --------
 --------
 SPEED VR

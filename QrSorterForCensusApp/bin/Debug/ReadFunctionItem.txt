@@ -1,9 +1,3 @@
 “ÇŽæ–³‚µ
-QR_••“›_ƒOƒ‰ƒVƒ“
-QR_••“›_“§–¾
-QR—t‘
-NW7
-CODE39
-CODE128
-JAN
-OCR
+‚p‚q
+
