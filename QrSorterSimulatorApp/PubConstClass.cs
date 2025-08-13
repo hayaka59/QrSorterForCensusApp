@@ -26,7 +26,7 @@ namespace QrSorterSimulatorApp
         public const string CMD_RECIEVE_d = "d";   // 
         public const string CMD_RECIEVE_e = "e";   // 
 
-        public const string DEF_VERSION = "Ver.0.4.0.5";                        // バージョン情報（メジャー.マイナー.ビルド.リビジョン） 
+        public const string DEF_VERSION = "Ver.0.8.1.3";                        // バージョン情報（メジャー.マイナー.ビルド.リビジョン） 
         public static object objSyncHist;
 
         public const string DEF_FILENAME = "QrSorterSimulatorApp.def";          // DEFファイル名称
