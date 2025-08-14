@@ -1730,14 +1730,13 @@ namespace QrSorterInspectionApp
 
                         if (bFind)
                         {
-                            CommonModule.OutPutLogFile($"【Lコマンド受信時】重複データ：{sQrData}");
+                            CommonModule.OutPutLogFile($"重複データ：{sQrData}");
                             // シリアルデータ送信（重複エラー発生）
                             SendSerialData(PubConstClass.CMD_SEND_g1);
                         }
                         else
                         {
-                            //CommonModule.OutPutLogFile($"最初のデータ：{lstPastReceivedQrData[0]}");
-                            //CommonModule.OutPutLogFile($"最後のデータ：{lstPastReceivedQrData[lstPastReceivedQrData.Count - 1]}");                        
+                            CommonModule.OutPutLogFile($"重複データ無し：{lstPastReceivedQrData[0]}");
                             // シリアルデータ送信（重複エラー発生）
                             SendSerialData(PubConstClass.CMD_SEND_g0);
                         }
@@ -1753,7 +1752,8 @@ namespace QrSorterInspectionApp
                 }
                 else
                 {
-                    // シリアルデータ送信（重複エラー発生）
+                    CommonModule.OutPutLogFile($"最初のデータなので重複無し：{sQrData}");
+                    // シリアルデータ送信（重複エラー無しモード）
                     SendSerialData(PubConstClass.CMD_SEND_g0);
                 }
             }
