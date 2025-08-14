@@ -790,7 +790,8 @@ namespace QrSorterInspectionApp
                     if (LblSelecttedFolder.Text == "")
                     {
                         sPutDataPath += CommonModule.IncludeTrailingPathDelimiter(Application.StartupPath);
-                        sPutDataPath += "\\JOB\\";
+                        // アプリ格納フォルダと同じフォルダとする
+                        //sPutDataPath += "\\JOB\\";
                     }
                     else
                     {
