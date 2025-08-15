@@ -1021,55 +1021,14 @@ namespace QrSorterInspectionApp
                         LblStatus.Text = "停止中";
                         LblStatus.BackColor = Color.LightGray;
                         LblStatus.ForeColor = Color.Black;
-
                         SetControlEnable(true);
-
-                        //BtnJobSelect.Enabled = true;
-                        //DtpDateReceipt.Enabled = true;
-                        //CmbNonDeliveryReasonSorting1.Enabled = true;
-                        //CmbNonDeliveryReasonSorting2.Enabled = true;
-                        //BtnSetting.Enabled = true;
-                        //BtnStartInspection.Enabled = true;
-                        //BtnClose.Enabled = true;
-
-                        //BtnCounterClear1.Visible = true;
-                        //BtnCounterClear2.Visible = true;
-                        //BtnCounterClear3.Visible = true;
-                        //BtnCounterClear4.Visible = true;
-                        //BtnCounterClear5.Visible = true;
-                        //BtnRejectCounterClear.Visible = true;
-                        //BtnAllCounterClear.Visible = true;
                         break;
 
                     case 1:
                         LblStatus.Text = "検査中";
                         LblStatus.BackColor = Color.LightGreen;
                         LblStatus.ForeColor = Color.Black;
-
                         SetControlEnable(false);
-
-                        //BtnJobSelect.Enabled = false;
-                        //DtpDateReceipt.Enabled = false;
-                        //CmbNonDeliveryReasonSorting1.Enabled = false;
-                        //CmbNonDeliveryReasonSorting2.Enabled = false;
-                        //BtnSetting.Enabled = false;
-                        //BtnStartInspection.Enabled = false;
-                        //BtnClose.Enabled = false;
-
-                        //BtnCounterClear1.Visible = false;
-                        //BtnCounterClear2.Visible = false;
-                        //BtnCounterClear3.Visible = false;
-                        //BtnCounterClear4.Visible = false;
-                        //BtnCounterClear5.Visible = false;
-                        //BtnRejectCounterClear.Visible = false;
-                        //BtnAllCounterClear.Visible = false;
-
-                        //groupBox2.Enabled = false;
-                        //TxtBoxLabelNumber.Enabled = false;
-                        //TxtInquiryNumber.Enabled = false;
-                        //TxtCheckReading.Enabled = false;
-                        //TxtQrReadData.Enabled = false;
-
                         break;
 
                     case 2:
@@ -1082,6 +1041,12 @@ namespace QrSorterInspectionApp
                         BtnCounterClear3.Visible = false;
                         BtnCounterClear4.Visible = false;
                         BtnCounterClear5.Visible = false;
+                        break;
+
+                    case 3:
+                        LblStatus.Text = "手動登録中";
+                        LblStatus.BackColor = Color.Orange;
+                        LblStatus.ForeColor = Color.White;
                         break;
 
                     default:
@@ -2666,20 +2631,37 @@ namespace QrSorterInspectionApp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TxtQrReadData_Key(object sender, KeyEventArgs e)
         {
             try
             {
                 if (e.KeyCode == Keys.Enter)
                 {
+                    //e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
+
                     string input = TxtQrReadData.Text;
                     string sCheckDigit = GetCheckDigit(input);
-                    TxtCheckReading.Text = $"チェックデジット：{sCheckDigit}";
+                    //TxtCheckReading.Text = $"チェックデジット：{sCheckDigit}";
 
-                    //string firstFive = input.Length >= 5 ? input.Substring(0, 5) : input;
-                    //TxtCheckReading.Text = firstFive;
+                    DialogResult dialogResult = MessageBox.Show($"チェックデジットは、「{sCheckDigit}」です。登録しますか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                    if(dialogResult == DialogResult.Cancel)
+                    {
+                        // キャンセルされた場合は何もしない
+                        return;
+                    }
+                    // 重複チェック
 
-                    e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
+                    // 登録処理
+                    string sData = $"{input},0,000,1,\r";
+                    //iStatus = 3;
+                    SetStatus(3);
+                    MyProcData(sData);
+                    //iStatus = 0;
                 }
             }
             catch (Exception ex)
