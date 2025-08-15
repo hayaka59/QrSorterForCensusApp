@@ -1288,7 +1288,7 @@
             this.TxtBoxLabelNumber.Location = new System.Drawing.Point(253, 176);
             this.TxtBoxLabelNumber.Name = "TxtBoxLabelNumber";
             this.TxtBoxLabelNumber.Size = new System.Drawing.Size(333, 36);
-            this.TxtBoxLabelNumber.TabIndex = 356;
+            this.TxtBoxLabelNumber.TabIndex = 0;
             this.TxtBoxLabelNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtBoxLabelNumber_KeyDown);
             // 
             // TxtInquiryNumber

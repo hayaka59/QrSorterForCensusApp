@@ -309,34 +309,32 @@ namespace QrSorterInspectionApp
             {                
                 if (CmbLogType.SelectedIndex == 0)
                 {
-                    sPath = "QRソーター設定検査ログ（OKのみ）\\";
-                    //sMes = "（OKのみ）";
-                    sTitle = "（OKのみ）検査ログファイル件数：";
+                    sPath = "箱詰め用\\";
+                    sTitle = "（OKのみ）箱詰め用★検査ログファイル件数：";
                 }
                 else
                 {
-                    sPath = "QRソーター設定検査ログ（全件）\\";
-                    //sMes = "（全件）";
-                    sTitle = "（全件）検査ログファイル件数：";
+                    sPath = "受付・箱詰め用\\";
+                    sTitle = "（全件）箱詰め用★検査ログファイル件数：";
                 }
 
-                if (LblSelectedFile.Text != "")
-                {
-                    sArrayJob = LblSelectedFile.Text.Split('.');
-                    sPath += sArrayJob[0] + "\\";
-                }
-                else
-                {
-                    sArrayJob = ".csv".Split('.');
-                    sPath += "\\";
-                }
+                //if (LblSelectedFile.Text != "")
+                //{
+                //    sArrayJob = LblSelectedFile.Text.Split('.');
+                //    sPath += sArrayJob[0] + "\\";
+                //}
+                //else
+                //{
+                //    sArrayJob = ".csv".Split('.');
+                //    sPath += "\\";
+                //}
 
-                if (!Directory.Exists(CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) + sPath))
-                {                    
-                    CommonModule.OutPutLogFile($"【ログ管理】JOB（{sArrayJob[0]}）は、未検査のJOBです");
-                    MessageBox.Show($"JOB（{sArrayJob[0]}）は、未検査のJOBです", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                //if (!Directory.Exists(CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) + sPath))
+                //{                    
+                //    CommonModule.OutPutLogFile($"【ログ管理】JOB（{sArrayJob[0]}）は、未検査のJOBです");
+                //    MessageBox.Show($"JOB（{sArrayJob[0]}）は、未検査のJOBです", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    return;
+                //}
 
                 // ログファイル一覧格納リストのクリア
                 lstLogFileList.Clear();
@@ -477,11 +475,11 @@ namespace QrSorterInspectionApp
                     }
                 }
 
-                if (sArrayJob[0] == "")
-                {
-                    sArrayJob[0] = "指定なし";
-                }
-                LblLogFileCount.Text = $"JOB名（{sArrayJob[0]}）{sTitle}{LsvLogList.Items.Count:#,###} 件";
+                //if (sArrayJob[0] == "")
+                //{
+                //    sArrayJob[0] = "指定なし";
+                //}
+                LblLogFileCount.Text = $"{sTitle}{LsvLogList.Items.Count:#,###} 件";
             }
             catch (Exception ex)
             {
