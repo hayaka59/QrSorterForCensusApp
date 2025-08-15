@@ -32,6 +32,12 @@ namespace QrSorterInspectionApp
                 LblVersion.Text = PubConstClass.DEF_VERSION;
                 CommonModule.OutPutLogFile("ログ画面を表示しました");
                 LblSelectedFile.Text = "";
+
+                CmbMode.Items.Clear();
+                CmbMode.Items.Add("受付モード");
+                CmbMode.Items.Add("箱詰めモード");
+                CmbMode.SelectedIndex = 1;
+
                 CmbLogType.Items.Clear();
                 CmbLogType.Items.Add("ＯＫログ");
                 CmbLogType.Items.Add("全件ログ");
@@ -107,18 +113,6 @@ namespace QrSorterInspectionApp
                                                      col11
                                                    };
                 LsvLogContent.Columns.AddRange(colHeaderOK);
-                #endregion
-                #region 不着事由仕分け１と２の項目設定
-                CommonModule.ReadNonDeliveryList();
-                CmbReasonForNonDelivery1.Items.Clear();
-                CmbReasonForNonDelivery1.Items.Clear();
-                foreach (var items in PubConstClass.lstNonDeliveryList)
-                {
-                    CmbReasonForNonDelivery1.Items.Add(items);
-                    CmbReasonForNonDelivery2.Items.Add(items);
-                }
-                CmbReasonForNonDelivery1.SelectedIndex = 0;
-                CmbReasonForNonDelivery2.SelectedIndex = 0;
                 #endregion
 
                 LblLogFileCount.Text = "";
@@ -300,41 +294,41 @@ namespace QrSorterInspectionApp
         private void InspectionLogList()
         {
             string[] sArray;
-            string[] sArrayJob;
+            //string[] sArrayJob;
             string sPath;
-            //string sMes;
             string sTitle;
 
             try
-            {                
-                if (CmbLogType.SelectedIndex == 0)
+            {
+                bool bIsUketuke;
+                if (CmbMode.SelectedIndex == 0)
                 {
-                    sPath = "箱詰め用\\";
-                    sTitle = "（OKのみ）箱詰め用★検査ログファイル件数：";
+                    if (CmbLogType.SelectedIndex == 0)
+                    {
+                        sPath = "受付用\\";
+                        sTitle = "（OKのみ）箱詰め用★検査ログファイル件数：";
+                    }
+                    else
+                    {
+                        sPath = "受付・箱詰め用\\";
+                        sTitle = "（全件）箱詰め用★検査ログファイル件数：";
+                    }
+                    bIsUketuke = true;
                 }
                 else
                 {
-                    sPath = "受付・箱詰め用\\";
-                    sTitle = "（全件）箱詰め用★検査ログファイル件数：";
+                    if (CmbLogType.SelectedIndex == 0)
+                    {
+                        sPath = "箱詰め用\\";
+                        sTitle = "（OKのみ）箱詰め用★検査ログファイル件数：";
+                    }
+                    else
+                    {
+                        sPath = "受付・箱詰め用\\";
+                        sTitle = "（全件）箱詰め用★検査ログファイル件数：";
+                    }
+                    bIsUketuke = false;
                 }
-
-                //if (LblSelectedFile.Text != "")
-                //{
-                //    sArrayJob = LblSelectedFile.Text.Split('.');
-                //    sPath += sArrayJob[0] + "\\";
-                //}
-                //else
-                //{
-                //    sArrayJob = ".csv".Split('.');
-                //    sPath += "\\";
-                //}
-
-                //if (!Directory.Exists(CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) + sPath))
-                //{                    
-                //    CommonModule.OutPutLogFile($"【ログ管理】JOB（{sArrayJob[0]}）は、未検査のJOBです");
-                //    MessageBox.Show($"JOB（{sArrayJob[0]}）は、未検査のJOBです", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //    return;
-                //}
 
                 // ログファイル一覧格納リストのクリア
                 lstLogFileList.Clear();
@@ -343,6 +337,8 @@ namespace QrSorterInspectionApp
                 // 検査ログの内容のクリア
                 LsvLogContent.Items.Clear();
 
+                string[] sAryFileName;
+                string sFileNameForFilter;
                 List<string> lstFileList = new List<string>();
                 lstFileList.Clear();
                 if (CmbSortBy.SelectedIndex == 0)
@@ -353,7 +349,26 @@ namespace QrSorterInspectionApp
                                                                           sPath,
                                                                           "*", SearchOption.AllDirectories).OrderByDescending(f => File.GetLastWriteTime(f)))
                     {
-                        lstFileList.Add(sTranFile);
+                        if (bIsUketuke)
+                        {
+                            // ファイル名の先頭が「uketuke」のファイルのみ表示
+                            sAryFileName = sTranFile.Split('\\');
+                            sFileNameForFilter = sAryFileName[sAryFileName.Length - 1];
+                            if (sFileNameForFilter.StartsWith("uketuke"))
+                            {
+                                lstFileList.Add(sTranFile);
+                            }
+                        }
+                        else
+                        {
+                            // ファイル名の先頭が「uketuke」のファイル以外を表示
+                            sAryFileName = sTranFile.Split('\\');
+                            sFileNameForFilter = sAryFileName[sAryFileName.Length - 1];
+                            if (!sFileNameForFilter.StartsWith("uketuke"))
+                            {
+                                lstFileList.Add(sTranFile);
+                            }                            
+                        }
                     }
                 }
                 else
@@ -364,7 +379,26 @@ namespace QrSorterInspectionApp
                                                                           sPath,
                                                                           "*", SearchOption.AllDirectories))
                     {
-                        lstFileList.Add(sTranFile);
+                        if (bIsUketuke)
+                        {
+                            // ファイル名の先頭が「uketuke」のファイルのみ表示
+                            sAryFileName = sTranFile.Split('\\');
+                            sFileNameForFilter = sAryFileName[sAryFileName.Length - 1];
+                            if (sFileNameForFilter.StartsWith("uketuke"))
+                            {
+                                lstFileList.Add(sTranFile);
+                            }
+                        }
+                        else
+                        {
+                            // ファイル名の先頭が「uketuke」のファイル以外を表示
+                            sAryFileName = sTranFile.Split('\\');
+                            sFileNameForFilter = sAryFileName[sAryFileName.Length - 1];
+                            if (!sFileNameForFilter.StartsWith("uketuke"))
+                            {
+                                lstFileList.Add(sTranFile);
+                            }
+                        }
                     }
                 }
 
@@ -386,39 +420,6 @@ namespace QrSorterInspectionApp
                             // 該当しないので対象ファイルから外す
                             sFileName = "";
                             sFileNameFullPath = "";
-                        }
-                    }
-                    // 不着事由仕分け１で絞り込む
-                    if (ChkReasonForNonDelivery1.Checked)
-                    {
-                        if (sFileName != "")
-                        {
-                            string[] sArrayNonDeli1 = sFileName.Split('_');
-                            string[] sArrayCmbNonDeli1 = CmbReasonForNonDelivery1.Text.Split(',');
-
-                            if (int.Parse(sArrayCmbNonDeli1[0]) != int.Parse(sArrayNonDeli1[sArrayNonDeli1.Length-4]))
-                            {
-                                // 該当しないので対象ファイルから外す
-                                sFileName = "";
-                                sFileNameFullPath = "";
-                            }
-
-                        }
-                    }
-                    // 不着事由仕分け２で絞り込む
-                    if (ChkReasonForNonDelivery2.Checked)
-                    {
-                        if (sFileName != "")
-                        {
-                            string[] sArrayNonDeli2 = sFileName.Split('_');
-                            string[] sArrayCmbNonDeli2 = CmbReasonForNonDelivery2.Text.Split(',');
-
-                            if (int.Parse(sArrayCmbNonDeli2[0]) != int.Parse(sArrayNonDeli2[sArrayNonDeli2.Length-3]))
-                            {
-                                // 該当しないので対象ファイルから外す
-                                sFileName = "";
-                                sFileNameFullPath = "";
-                            }
                         }
                     }
 
@@ -524,8 +525,6 @@ namespace QrSorterInspectionApp
                 GrpSortBy.Enabled = bEnabled;
                 BtnUpdate.Enabled = bEnabled;
                 GrpInspectionDate.Enabled = bEnabled;
-                GrpReasonForNonDelivery1.Enabled = bEnabled;
-                GrpReasonForNonDelivery2.Enabled = bEnabled;
             }
             catch (Exception ex)
             {
