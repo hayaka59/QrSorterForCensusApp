@@ -32,7 +32,7 @@ namespace QrSorterInspectionApp
         private int    iStatus;                 // 検査中ステータス
         private bool   bIsDuplicateCheck;       // 重複チェック
         private bool   bIsJobChange;            // JOB変更フラグ
-
+                
         private int iOKCount = 0;               // OK用カウンタ
         private int iNGCount = 0;               // NG用カウンタ
         private int iBox1Count = 0;             // ボックス１用カウンタ
@@ -55,15 +55,35 @@ namespace QrSorterInspectionApp
         private string sFileNameForGroup3;      // グループ３操作ログファイル名
         private string sFileNameForGroup4;      // グループ４操作ログファイル名
         private string sFileNameForGroup5;      // グループ５操作ログファイル名
-        private string sFileNameForAllItems;    // 全件用の操作ログファイル名
+
+        #region ログ保存関係
+
+        private string sProcessingModeName;     // 処理モード名
+        private string sProcessingDate;         // 処理日
+
+        private string sBoxLabelNumber;         // 箱ラベル番号
+        private string sInquiryNumber;          // 問い合わせ番号 
+        private string sReceiptDate;            // 受領日
+
+        private string sFolderNameForOkLog;     // OK用の操作ログファイル名
+        private string sFolderNameForAllLog;    // 全件用の操作ログファイル名
+        private string sFolderNameForErrorLog;  // エラーログファイル名
+
+        private string sFileNameForOkLog;       // OK用の操作ログファイル名
+        private string sFileNameForAllLog;      // 全件用の操作ログファイル名
         private string sFileNameForErrorLog;    // エラーログファイル名
+        #endregion
 
         private byte[] buffer = new byte[1024];
         private int bufferIndex = 0;
 
-        private string OK_FOLDER_NAME = "QRソーター設定検査ログ（OKのみ）\\";
-        private string ALL_FOLDER_NAME = "QRソーター設定検査ログ（全件）\\";
-        private string ERROR_FOLDER_NAME = "エラーログファイル\\";
+        //private string sFileNameForOkLog;       // OK用の操作ログファイル名
+        //private string sFileNameForAllItems;    // 全件用の操作ログファイル名
+        //private string sFileNameForErrorLog;    // エラーログファイル名
+
+        //private string OK_FOLDER_NAME = "QRソーター設定検査ログ（OKのみ）\\";
+        //private string ALL_FOLDER_NAME = "QRソーター設定検査ログ（全件）\\";
+        //private string ERROR_FOLDER_NAME = "エラーログファイル\\";
 
         public QrSorterInspectionForm()
         {
@@ -201,11 +221,12 @@ namespace QrSorterInspectionApp
                 LstSettingInfomation.Items.Clear();
                 LstSettingInfomation.Items.Add("【設定内容】");
                 LstSettingInfomation.Items.Add("Ｗフィード検査：");
-                LstSettingInfomation.Items.Add("超音波検査　　：");
+                //LstSettingInfomation.Items.Add("超音波検査　　：");
                 LstSettingInfomation.Items.Add("桁数チェック　：");
                 LstSettingInfomation.Items.Add("読取機能　　　：");
                 LstSettingInfomation.Items.Add("読取チェック　：");
                 LstSettingInfomation.Items.Add("読取位置　　　：");
+                LstSettingInfomation.Items.Add("C/D チェック　：");
 
                 // 過去に受信したQRデータ一覧のクリア
                 lstPastReceivedQrData.Clear();
@@ -410,7 +431,6 @@ namespace QrSorterInspectionApp
             string[] sArray;
             string[] sNonDeliveryReasonArray;
 
-
             try
             {
                 if (LblSelectedFile.Text.Trim()=="")
@@ -418,194 +438,285 @@ namespace QrSorterInspectionApp
                     CommonModule.OutPutLogFile("JOB未選択状態で CreateInspectionLogFolder() が呼ばれました");
                     return;
                 }
-                sArray = LblSelectedFile.Text.Split('.');
-                // JOBフォルダ名
-                sJobFolderName = sArray[0];
-                // JOB名の取得
-                if (sArray[0].Length > 16)
+
+                // 箱ラベル番号
+                sBoxLabelNumber = TxtBoxLabelNumber.Text.Trim();
+                // 問い合わせ番号
+                sInquiryNumber = TxtInquiryNumber.Text.Trim();
+                // 受領日
+                sReceiptDate = DtpDateReceipt.Value.ToString("yyyyMMdd");
+
+                //string sModeName;
+                if (CmbMode.SelectedIndex == 0)
                 {
-                    // 16桁目までの切出
-                    sJobName = sArray[0].Substring(0,16);
+                    // 受付モード
+                    sProcessingModeName = "受付用";
                 }
                 else
                 {
-                    // 後ろに「0」を付加して16桁とする
-                    sJobName = sArray[0].PadRight(16, '0');
+                    // 箱詰めモード
+                    sProcessingModeName = "箱詰め用";
                 }
-                // 不着事由１と２の取得
-                sNonDeliveryReasonArray = CmbNonDeliveryReasonSorting1.Text.Split('：');
-                sNonDeliveryReason1 = sNonDeliveryReasonArray[0];               
-                sNonDeliveryReasonArray = CmbNonDeliveryReasonSorting2.Text.Split('：');
-                sNonDeliveryReason2 = sNonDeliveryReasonArray[0];
+                // 処理日の取得
+                sProcessingDate = DateTime.Now.ToString("yyyyMMdd");
 
-                sReasonForNonDelivery1 = "_" + sNonDeliveryReason1;
-                sReasonForNonDelivery2 = "_" + sNonDeliveryReason2;
-                // 受領日を取得
-                sDateOfReceipt = DtpDateReceipt.Value.ToString("yyyyMMdd");
-                string sDate = "_" + sDateOfReceipt + "_";
-
-                string[] sGroupName = new string[6];                // グループ名
-                string[] sFolderNameWork = new string[6];           // グループ１～５、リジェクト、フォルダ名        
-                string[] sFileNameForGroupWork = new string[6];     // グループ１～５、リジェクト、操作ログファイル名
-
-                // JOB名までのフォルダ（全件）の存在チェックと作成
-                sArray = LblSelectedFile.Text.Split('.');                
-                sJobFolder = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
-                            ALL_FOLDER_NAME + sArray[0];
-                if (Directory.Exists(sJobFolder) == false)
+                // ＯＫ用の検査ログ保存用フォルダの作成
+                sFolderNameForOkLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+                                      sProcessingModeName + "\\" + sProcessingDate;
+                if (Directory.Exists(sFolderNameForOkLog) == false)
                 {
-                    Directory.CreateDirectory(sJobFolder);
-                }
-                // グループ６フォルダ（リジェクト用）の存在チェックと作成
-                // 全件フォルダの配下に作成する
-                sGroupName[5] = "リジェクト";
-                sFolderNameWork[5] = "6_リジェクト";
-                sGrpFolder = sJobFolder + "\\" + sFolderNameWork[5];
-                if (Directory.Exists(sGrpFolder) == false)
-                {
-                    //Directory.CreateDirectory(sGrpFolder);
+                    Directory.CreateDirectory(sFolderNameForOkLog);
                 }
 
-                // JOB名までのエラーフォルダの存在チェックと作成
-                sJobFolder = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
-                            ERROR_FOLDER_NAME + sArray[0];
-                if (Directory.Exists(sJobFolder) == false)
+                // 全件用の検査ログ保存用フォルダの作成
+                sFolderNameForAllLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+                                       "受付・箱詰め用\\" + sProcessingDate;
+                if (Directory.Exists(sFolderNameForAllLog) == false)
                 {
-                    Directory.CreateDirectory(sJobFolder);
+                    Directory.CreateDirectory(sFolderNameForAllLog);
                 }
 
-                // JOB名までのフォルダ（OKのみ）の存在チェックと作成
-                sJobFolder = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) + 
-                            OK_FOLDER_NAME + sArray[0];
-                if (Directory.Exists(sJobFolder) == false)
+                // エラーログ用のログ保存用フォルダの作成
+                sFolderNameForErrorLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+                                         "エラーログ\\" + sProcessingDate;
+                if (Directory.Exists(sFolderNameForErrorLog) == false)
                 {
-                    Directory.CreateDirectory(sJobFolder);
+                    Directory.CreateDirectory(sFolderNameForErrorLog);
                 }
 
-                // グループ６フォルダ（リジェクト用）の存在チェックと作成
-                // 全件フォルダの配下に作成する                
-                sGrpFolder = sJobFolder + "\\" + sFolderNameWork[5];
-                if (Directory.Exists(sGrpFolder) == false)
-                {
-                    //Directory.CreateDirectory(sGrpFolder);
-                }
+                string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // グループ１フォルダの存在チェックと作成
-                sArray = PubConstClass.lstGroupInfo[0].Split(',');
-                sGroupName[0] = sArray[0];
-                sFolderNameWork[0] = "1_" + sArray[0];
-                sGrpFolder = sJobFolder + "\\" + sFolderNameWork[0];
-                if (Directory.Exists(sGrpFolder) == false)
+                if (CmbMode.SelectedIndex == 0)
                 {
-                    //Directory.CreateDirectory(sGrpFolder);
-                }                
-                // グループ２フォルダの存在チェックと作成
-                sArray = PubConstClass.lstGroupInfo[1].Split(',');
-                sGroupName[1] = sArray[0];
-                sFolderNameWork[1] = "2_" + sArray[0];
-                sGrpFolder = sJobFolder + "\\" + sFolderNameWork[1];
-                if (Directory.Exists(sGrpFolder) == false)
-                {
-                    //Directory.CreateDirectory(sGrpFolder);
+                    // 受付モード
+                    sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
+                    sFileNameForAllLog = $"{sFolderNameForAllLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
                 }
-                // グループ３フォルダの存在チェックと作成
-                sArray = PubConstClass.lstGroupInfo[2].Split(',');                
-                sGroupName[2] = sArray[0];
-                sFolderNameWork[2] = "3_" + sArray[0];
-                sGrpFolder = sJobFolder + "\\" + sFolderNameWork[2];
-                if (Directory.Exists(sGrpFolder) == false)
+                else
                 {
-                    //Directory.CreateDirectory(sGrpFolder);
-                }
-                // グループ４フォルダの存在チェックと作成
-                sArray = PubConstClass.lstGroupInfo[3].Split(',');
-                sGroupName[3] = sArray[0];
-                sFolderNameWork[3] = "4_" + sArray[0];
-                sGrpFolder = sJobFolder + "\\" + sFolderNameWork[3];
-                if (Directory.Exists(sGrpFolder) == false)
-                {
-                    //Directory.CreateDirectory(sGrpFolder);
-                }
-                // グループ５フォルダの存在チェックと作成
-                sArray = PubConstClass.lstGroupInfo[4].Split(',');
-                sGroupName[4] = sArray[0];
-                sFolderNameWork[4] = "5_" + sArray[0];
-                sGrpFolder = sJobFolder + "\\" + sFolderNameWork[4];
-                if (Directory.Exists(sGrpFolder) == false)
-                {
-                    //Directory.CreateDirectory(sGrpFolder);
-                }
-                // グループ名の長さが16桁を超える場合は16桁に切り出す
-                for (int i = 0; i < 5; i++)
-                {
-                    if (sGroupName[i].Length > 16)
-                    {
-                        sGroupName[i] = sGroupName[i].Substring(0, 16);
-                    }
-                }
-                //             0 1              2 3        4 5                  6 7                  8 9  0
-                //コメリ①ハガキ,1,コメリ②ハガキ,2,武蔵野BK,3,西日本シティーBK①,4,西日本シティーBK②,5,50,50,50,50,50,ON,ON,ON,ON,ON,
-                sArray = PubConstClass.lstPocketInfo[0].Split(',');
+                    // 箱詰めモード
+                    sFileNameForOkLog = $"{sFolderNameForOkLog}\\{sBoxLabelNumber}_{sInquiryNumber}_{sReceiptDate}_{sOutPutDateTime}.csv";
+                    sFileNameForAllLog = $"{sFolderNameForAllLog}\\{sBoxLabelNumber}_{sInquiryNumber}_{sReceiptDate}_{sOutPutDateTime}.csv";
+                }                                              
+                sFileNameForErrorLog = $"{sFolderNameForErrorLog}\\国勢調査用_errorlog_{sReceiptDate}_{sOutPutDateTime}.csv";
 
-                // 現在の日付（年月日）を求める
-                DateTime dtCurrent = DateTime.Now;
-                // 現在日付から１秒～５秒を加算
-                DateTime dtPostDate1 = dtCurrent.AddSeconds(1);
-                DateTime dtPostDate2 = dtCurrent.AddSeconds(2);
-                DateTime dtPostDate3 = dtCurrent.AddSeconds(3);
-                DateTime dtPostDate4 = dtCurrent.AddSeconds(4);
-                DateTime dtPostDate5 = dtCurrent.AddSeconds(5);
-                DateTime dtPostDate6 = dtCurrent.AddSeconds(6);
-                sFileNameForAllItems = sJobName + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtCurrent.ToString("yyyyMMddHHmmss") + "全件.csv";
+                LblFdrInfo1.Text = sFolderNameForOkLog;
+                LblGrpInfo1.Text = sFileNameForOkLog;
 
-                sFileNameForErrorLog = sJobName + sReasonForNonDelivery1 + sReasonForNonDelivery2 + "_errorlog_" + dtCurrent.ToString("yyyyMMddHHmmss") + ".csv";
-
-                // グループ１～５の操作ログファイル名を取得
-                sFileNameForGroupWork[0] = sGroupName[0].PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate1.ToString("yyyyMMddHHmmss") + ".csv";
-                sFileNameForGroupWork[1] = sGroupName[1].PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate2.ToString("yyyyMMddHHmmss") + ".csv";
-                sFileNameForGroupWork[2] = sGroupName[2].PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate3.ToString("yyyyMMddHHmmss") + ".csv";
-                sFileNameForGroupWork[3] = sGroupName[3].PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate4.ToString("yyyyMMddHHmmss") + ".csv";
-                sFileNameForGroupWork[4] = sGroupName[4].PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate5.ToString("yyyyMMddHHmmss") + ".csv";
-                sFileNameForGroupWork[5] = "リジェクト".PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate6.ToString("yyyyMMddHHmmss") + ".csv";
-                CommonModule.OutPutLogFile($"グループ１ = {sFileNameForGroupWork[0]}");
-                CommonModule.OutPutLogFile($"グループ２ = {sFileNameForGroupWork[1]}");
-                CommonModule.OutPutLogFile($"グループ３ = {sFileNameForGroupWork[2]}");
-                CommonModule.OutPutLogFile($"グループ４ = {sFileNameForGroupWork[3]}");
-                CommonModule.OutPutLogFile($"グループ５ = {sFileNameForGroupWork[4]}");
-                CommonModule.OutPutLogFile($"リジェクト = {sFileNameForGroupWork[5]}");
-
-                sFolderName1 = sFolderNameWork[int.Parse(sArray[1]) - 1];
-                sFolderName2 = sFolderNameWork[int.Parse(sArray[3]) - 1];
-                sFolderName3 = sFolderNameWork[int.Parse(sArray[5]) - 1];
-                sFolderName4 = sFolderNameWork[int.Parse(sArray[7]) - 1];
-                sFolderName5 = sFolderNameWork[int.Parse(sArray[9]) - 1];
-                sFileNameForGroup1 = sFileNameForGroupWork[int.Parse(sArray[1]) - 1];
-                sFileNameForGroup2 = sFileNameForGroupWork[int.Parse(sArray[3]) - 1];
-                sFileNameForGroup3 = sFileNameForGroupWork[int.Parse(sArray[5]) - 1];
-                sFileNameForGroup4 = sFileNameForGroupWork[int.Parse(sArray[7]) - 1];
-                sFileNameForGroup5 = sFileNameForGroupWork[int.Parse(sArray[9]) - 1];
-                CommonModule.OutPutLogFile($"ポケット１割当グループ名 = {sFileNameForGroup1}");
-                CommonModule.OutPutLogFile($"ポケット２割当グループ名 = {sFileNameForGroup2}");
-                CommonModule.OutPutLogFile($"ポケット３割当グループ名 = {sFileNameForGroup3}");
-                CommonModule.OutPutLogFile($"ポケット４割当グループ名 = {sFileNameForGroup4}");
-                CommonModule.OutPutLogFile($"ポケット５割当グループ名 = {sFileNameForGroup5}");
-
-                LblFdrInfo1.Text = sFolderName1;
-                LblFdrInfo2.Text = sFolderName2;
-                LblFdrInfo3.Text = sFolderName3;
-                LblFdrInfo4.Text = sFolderName4;
-                LblFdrInfo5.Text = sFolderName5;
-                LblGrpInfo1.Text = sFileNameForGroup1;
-                LblGrpInfo2.Text = sFileNameForGroup2;
-                LblGrpInfo3.Text = sFileNameForGroup3;
-                LblGrpInfo4.Text = sFileNameForGroup4;
-                LblGrpInfo5.Text = sFileNameForGroup5;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.StackTrace, "【CreateInspectionLogFolder】", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
+        //private void CreateInspectionLogFolder_BackUp()
+        //{
+        //    string sJobName;
+        //    string sJobFolder;
+        //    string sGrpFolder;
+        //    string sReasonForNonDelivery1;
+        //    string sReasonForNonDelivery2;
+        //    string[] sArray;
+        //    string[] sNonDeliveryReasonArray;
+
+
+        //    try
+        //    {
+        //        if (LblSelectedFile.Text.Trim() == "")
+        //        {
+        //            CommonModule.OutPutLogFile("JOB未選択状態で CreateInspectionLogFolder() が呼ばれました");
+        //            return;
+        //        }
+        //        sArray = LblSelectedFile.Text.Split('.');
+        //        // JOBフォルダ名
+        //        sJobFolderName = sArray[0];
+        //        // JOB名の取得
+        //        if (sArray[0].Length > 16)
+        //        {
+        //            // 16桁目までの切出
+        //            sJobName = sArray[0].Substring(0, 16);
+        //        }
+        //        else
+        //        {
+        //            // 後ろに「0」を付加して16桁とする
+        //            sJobName = sArray[0].PadRight(16, '0');
+        //        }
+        //        // 不着事由１と２の取得
+        //        sNonDeliveryReasonArray = CmbNonDeliveryReasonSorting1.Text.Split('：');
+        //        sNonDeliveryReason1 = sNonDeliveryReasonArray[0];
+        //        sNonDeliveryReasonArray = CmbNonDeliveryReasonSorting2.Text.Split('：');
+        //        sNonDeliveryReason2 = sNonDeliveryReasonArray[0];
+
+        //        sReasonForNonDelivery1 = "_" + sNonDeliveryReason1;
+        //        sReasonForNonDelivery2 = "_" + sNonDeliveryReason2;
+        //        // 受領日を取得
+        //        sDateOfReceipt = DtpDateReceipt.Value.ToString("yyyyMMdd");
+        //        string sDate = "_" + sDateOfReceipt + "_";
+
+        //        string[] sGroupName = new string[6];                // グループ名
+        //        string[] sFolderNameWork = new string[6];           // グループ１～５、リジェクト、フォルダ名        
+        //        string[] sFileNameForGroupWork = new string[6];     // グループ１～５、リジェクト、操作ログファイル名
+
+        //        // JOB名までのフォルダ（全件）の存在チェックと作成
+        //        sArray = LblSelectedFile.Text.Split('.');
+        //        sJobFolder = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+        //                    ALL_FOLDER_NAME + sArray[0];
+        //        if (Directory.Exists(sJobFolder) == false)
+        //        {
+        //            Directory.CreateDirectory(sJobFolder);
+        //        }
+        //        // グループ６フォルダ（リジェクト用）の存在チェックと作成
+        //        // 全件フォルダの配下に作成する
+        //        sGroupName[5] = "リジェクト";
+        //        sFolderNameWork[5] = "6_リジェクト";
+        //        sGrpFolder = sJobFolder + "\\" + sFolderNameWork[5];
+        //        if (Directory.Exists(sGrpFolder) == false)
+        //        {
+        //            //Directory.CreateDirectory(sGrpFolder);
+        //        }
+
+        //        // JOB名までのエラーフォルダの存在チェックと作成
+        //        sJobFolder = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+        //                    ERROR_FOLDER_NAME + sArray[0];
+        //        if (Directory.Exists(sJobFolder) == false)
+        //        {
+        //            Directory.CreateDirectory(sJobFolder);
+        //        }
+
+        //        // JOB名までのフォルダ（OKのみ）の存在チェックと作成
+        //        sJobFolder = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+        //                    OK_FOLDER_NAME + sArray[0];
+        //        if (Directory.Exists(sJobFolder) == false)
+        //        {
+        //            Directory.CreateDirectory(sJobFolder);
+        //        }
+
+        //        // グループ６フォルダ（リジェクト用）の存在チェックと作成
+        //        // 全件フォルダの配下に作成する                
+        //        sGrpFolder = sJobFolder + "\\" + sFolderNameWork[5];
+        //        if (Directory.Exists(sGrpFolder) == false)
+        //        {
+        //            //Directory.CreateDirectory(sGrpFolder);
+        //        }
+
+        //        // グループ１フォルダの存在チェックと作成
+        //        sArray = PubConstClass.lstGroupInfo[0].Split(',');
+        //        sGroupName[0] = sArray[0];
+        //        sFolderNameWork[0] = "1_" + sArray[0];
+        //        sGrpFolder = sJobFolder + "\\" + sFolderNameWork[0];
+        //        if (Directory.Exists(sGrpFolder) == false)
+        //        {
+        //            //Directory.CreateDirectory(sGrpFolder);
+        //        }
+        //        // グループ２フォルダの存在チェックと作成
+        //        sArray = PubConstClass.lstGroupInfo[1].Split(',');
+        //        sGroupName[1] = sArray[0];
+        //        sFolderNameWork[1] = "2_" + sArray[0];
+        //        sGrpFolder = sJobFolder + "\\" + sFolderNameWork[1];
+        //        if (Directory.Exists(sGrpFolder) == false)
+        //        {
+        //            //Directory.CreateDirectory(sGrpFolder);
+        //        }
+        //        // グループ３フォルダの存在チェックと作成
+        //        sArray = PubConstClass.lstGroupInfo[2].Split(',');
+        //        sGroupName[2] = sArray[0];
+        //        sFolderNameWork[2] = "3_" + sArray[0];
+        //        sGrpFolder = sJobFolder + "\\" + sFolderNameWork[2];
+        //        if (Directory.Exists(sGrpFolder) == false)
+        //        {
+        //            //Directory.CreateDirectory(sGrpFolder);
+        //        }
+        //        // グループ４フォルダの存在チェックと作成
+        //        sArray = PubConstClass.lstGroupInfo[3].Split(',');
+        //        sGroupName[3] = sArray[0];
+        //        sFolderNameWork[3] = "4_" + sArray[0];
+        //        sGrpFolder = sJobFolder + "\\" + sFolderNameWork[3];
+        //        if (Directory.Exists(sGrpFolder) == false)
+        //        {
+        //            //Directory.CreateDirectory(sGrpFolder);
+        //        }
+        //        // グループ５フォルダの存在チェックと作成
+        //        sArray = PubConstClass.lstGroupInfo[4].Split(',');
+        //        sGroupName[4] = sArray[0];
+        //        sFolderNameWork[4] = "5_" + sArray[0];
+        //        sGrpFolder = sJobFolder + "\\" + sFolderNameWork[4];
+        //        if (Directory.Exists(sGrpFolder) == false)
+        //        {
+        //            //Directory.CreateDirectory(sGrpFolder);
+        //        }
+        //        // グループ名の長さが16桁を超える場合は16桁に切り出す
+        //        for (int i = 0; i < 5; i++)
+        //        {
+        //            if (sGroupName[i].Length > 16)
+        //            {
+        //                sGroupName[i] = sGroupName[i].Substring(0, 16);
+        //            }
+        //        }
+        //        //             0 1              2 3        4 5                  6 7                  8 9  0
+        //        //コメリ①ハガキ,1,コメリ②ハガキ,2,武蔵野BK,3,西日本シティーBK①,4,西日本シティーBK②,5,50,50,50,50,50,ON,ON,ON,ON,ON,
+        //        sArray = PubConstClass.lstPocketInfo[0].Split(',');
+
+        //        // 現在の日付（年月日）を求める
+        //        DateTime dtCurrent = DateTime.Now;
+        //        // 現在日付から１秒～５秒を加算
+        //        DateTime dtPostDate1 = dtCurrent.AddSeconds(1);
+        //        DateTime dtPostDate2 = dtCurrent.AddSeconds(2);
+        //        DateTime dtPostDate3 = dtCurrent.AddSeconds(3);
+        //        DateTime dtPostDate4 = dtCurrent.AddSeconds(4);
+        //        DateTime dtPostDate5 = dtCurrent.AddSeconds(5);
+        //        DateTime dtPostDate6 = dtCurrent.AddSeconds(6);
+        //        sFileNameForAllItems = sJobName + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtCurrent.ToString("yyyyMMddHHmmss") + "全件.csv";
+
+        //        sFileNameForErrorLog = sJobName + sReasonForNonDelivery1 + sReasonForNonDelivery2 + "_errorlog_" + dtCurrent.ToString("yyyyMMddHHmmss") + ".csv";
+
+        //        // グループ１～５の操作ログファイル名を取得
+        //        sFileNameForGroupWork[0] = sGroupName[0].PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate1.ToString("yyyyMMddHHmmss") + ".csv";
+        //        sFileNameForGroupWork[1] = sGroupName[1].PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate2.ToString("yyyyMMddHHmmss") + ".csv";
+        //        sFileNameForGroupWork[2] = sGroupName[2].PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate3.ToString("yyyyMMddHHmmss") + ".csv";
+        //        sFileNameForGroupWork[3] = sGroupName[3].PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate4.ToString("yyyyMMddHHmmss") + ".csv";
+        //        sFileNameForGroupWork[4] = sGroupName[4].PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate5.ToString("yyyyMMddHHmmss") + ".csv";
+        //        sFileNameForGroupWork[5] = "リジェクト".PadLeft(16, '0') + sReasonForNonDelivery1 + sReasonForNonDelivery2 + sDate + dtPostDate6.ToString("yyyyMMddHHmmss") + ".csv";
+        //        CommonModule.OutPutLogFile($"グループ１ = {sFileNameForGroupWork[0]}");
+        //        CommonModule.OutPutLogFile($"グループ２ = {sFileNameForGroupWork[1]}");
+        //        CommonModule.OutPutLogFile($"グループ３ = {sFileNameForGroupWork[2]}");
+        //        CommonModule.OutPutLogFile($"グループ４ = {sFileNameForGroupWork[3]}");
+        //        CommonModule.OutPutLogFile($"グループ５ = {sFileNameForGroupWork[4]}");
+        //        CommonModule.OutPutLogFile($"リジェクト = {sFileNameForGroupWork[5]}");
+
+        //        sFolderName1 = sFolderNameWork[int.Parse(sArray[1]) - 1];
+        //        sFolderName2 = sFolderNameWork[int.Parse(sArray[3]) - 1];
+        //        sFolderName3 = sFolderNameWork[int.Parse(sArray[5]) - 1];
+        //        sFolderName4 = sFolderNameWork[int.Parse(sArray[7]) - 1];
+        //        sFolderName5 = sFolderNameWork[int.Parse(sArray[9]) - 1];
+        //        sFileNameForGroup1 = sFileNameForGroupWork[int.Parse(sArray[1]) - 1];
+        //        sFileNameForGroup2 = sFileNameForGroupWork[int.Parse(sArray[3]) - 1];
+        //        sFileNameForGroup3 = sFileNameForGroupWork[int.Parse(sArray[5]) - 1];
+        //        sFileNameForGroup4 = sFileNameForGroupWork[int.Parse(sArray[7]) - 1];
+        //        sFileNameForGroup5 = sFileNameForGroupWork[int.Parse(sArray[9]) - 1];
+        //        CommonModule.OutPutLogFile($"ポケット１割当グループ名 = {sFileNameForGroup1}");
+        //        CommonModule.OutPutLogFile($"ポケット２割当グループ名 = {sFileNameForGroup2}");
+        //        CommonModule.OutPutLogFile($"ポケット３割当グループ名 = {sFileNameForGroup3}");
+        //        CommonModule.OutPutLogFile($"ポケット４割当グループ名 = {sFileNameForGroup4}");
+        //        CommonModule.OutPutLogFile($"ポケット５割当グループ名 = {sFileNameForGroup5}");
+
+        //        LblFdrInfo1.Text = sFolderName1;
+        //        LblFdrInfo2.Text = sFolderName2;
+        //        LblFdrInfo3.Text = sFolderName3;
+        //        LblFdrInfo4.Text = sFolderName4;
+        //        LblFdrInfo5.Text = sFolderName5;
+        //        LblGrpInfo1.Text = sFileNameForGroup1;
+        //        LblGrpInfo2.Text = sFileNameForGroup2;
+        //        LblGrpInfo3.Text = sFileNameForGroup3;
+        //        LblGrpInfo4.Text = sFileNameForGroup4;
+        //        LblGrpInfo5.Text = sFileNameForGroup5;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.StackTrace, "【CreateInspectionLogFolder】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
 
         /// <summary>
         /// コントロールのDoubleBufferedプロパティをTrueにする
@@ -703,13 +814,70 @@ namespace QrSorterInspectionApp
         {
             try
             {
-                // シリアルデータ送信
-                SendSerialData(PubConstClass.CMD_SEND_b);
-                // 検査開始時のチェック
-                CheckStartUp();
+                // 各入力フィールドの桁数チェックを行う
+                if (CheckNumberOfDigits())
+                {
+                    // シリアルデータ送信
+                    SendSerialData(PubConstClass.CMD_SEND_b);
+                    // 検査開始時のチェック
+                    CheckStartUp();
+                }
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message, "【BtnStartInspection_Click】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckNumberOfDigits()
+        {
+            bool bRetVal = true;
+            try
+            {
+                // 箱ラベル番号の桁数チェック
+                if (TxtBoxLabelNumber.Text.Trim().Length != 18)
+                {
+                    bRetVal = false;
+                    //「検査終了」とする
+                    // シリアルデータ送信
+                    SendSerialData(PubConstClass.CMD_SEND_c);
+                    LblError.Visible = false;
+                    // 18桁でない場合
+                    MessageBox.Show("箱ラベル番号は１８桁で入力して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+                // 問い合わせ番号の桁数チェック
+                if (!(TxtInquiryNumber.Text.Trim().Length >= 11 && TxtInquiryNumber.Text.Trim().Length <= 13))
+                {
+                    bRetVal = false;
+                    //「検査終了」とする
+                    // シリアルデータ送信
+                    SendSerialData(PubConstClass.CMD_SEND_c);
+                    LblError.Visible = false;
+                    // 11～13桁でない場合
+                    MessageBox.Show("問い合わせ番号は１１～１３桁で入力して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+                // 読み取り値の桁数チェック
+                if (!(TxtCheckReading.Text.Trim().Length == 3 || TxtCheckReading.Text.Trim().Length == 5))
+                {
+                    bRetVal = false;
+                    // シリアルデータ送信
+                    SendSerialData(PubConstClass.CMD_SEND_c);
+                    LblError.Visible = false;
+                    // 3桁か5桁でない場合
+                    MessageBox.Show("読み取り値は３桁か５桁に設定して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                //return true;
+                return bRetVal;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【CheckNumberOfDigits】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
 
@@ -1057,7 +1225,11 @@ namespace QrSorterInspectionApp
 
                     case PubConstClass.CMD_RECIEVE_B:
                         // 開始コマンド
-                        MyProcStart();
+                        if (CheckNumberOfDigits())
+                        {
+                            // 桁数チェックでOKならば、、、
+                            MyProcStart();
+                        }
                         break;
 
                     case PubConstClass.CMD_RECIEVE_C:
@@ -1369,24 +1541,27 @@ namespace QrSorterInspectionApp
                     CommonModule.OutPutLogFile($"エラー内容：{sErrorCode},未定義エラー番号,未定義のエラー番号です。");
                     sErrorData += "未定義エラー番号,未定義のエラー番号です。";
                 }
-                // エラーフォルダ及びエラーファイル名のチェック
-                if (sJobFolderName == null || sFileNameForErrorLog == null) {
-                    // NULLの場合
-                    sJobFolderName = "JOB未選択0000000000";
-                    sFileNameForErrorLog = "JOB未選択0000000000_0_0_errorlog_" + DateTime.Now.ToString("yyyyMMdd")+"000000.csv";
-                    CommonModule.OutPutLogFile($"エラーファイル名を作成しました：{sFileNameForErrorLog}");
-                    string sFolderName = "";
-                    sFolderName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-                    sFolderName += ERROR_FOLDER_NAME + sJobFolderName + "\\";
-                    if (!Directory.Exists(sFolderName)) { 
-                        Directory.CreateDirectory(sFolderName);
-                        CommonModule.OutPutLogFile($"エラーフォルダを作成しました：{sFolderName}");
-                    }
-                }
+                
+                //// エラーフォルダ及びエラーファイル名のチェック
+                //if (sJobFolderName == null || sFileNameForErrorLog == null) {
+                //    // NULLの場合
+                //    sJobFolderName = "JOB未選択0000000000";
+                //    sFileNameForErrorLog = "JOB未選択0000000000_0_0_errorlog_" + DateTime.Now.ToString("yyyyMMdd")+"000000.csv";
+                //    CommonModule.OutPutLogFile($"エラーファイル名を作成しました：{sFileNameForErrorLog}");
+                //    //string sFolderName = "";
+                //    //sFolderName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
+                
+                //    //string sFolderName += sFolderNameForErrorLog + sJobFolderName + "\\";
+                //    if (!Directory.Exists(sFolderNameForErrorLog)) { 
+                //        Directory.CreateDirectory(sFolderNameForErrorLog);
+                //        CommonModule.OutPutLogFile($"エラーフォルダを作成しました：{sFolderNameForErrorLog}");
+                //    }
+                //}
+
                 // エラーファイル名の生成
-                sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-                sSaveFileName += ERROR_FOLDER_NAME + sJobFolderName + "\\";
-                sSaveFileName += sFileNameForErrorLog;
+                //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
+                //sSaveFileName += sFolderNameForErrorLog + sJobFolderName + "\\";
+                sSaveFileName = sFileNameForErrorLog;
 
                 // エラーデータ書込処理
                 using (StreamWriter sw = new StreamWriter(sSaveFileName, true, Encoding.Default))
@@ -1446,40 +1621,6 @@ namespace QrSorterInspectionApp
                 col[2] = strArray[0];
                 // 判定（OK/NG）
                 col[3] = strArray[1].Trim() == "0" ? "OK" : "NG";
-
-                #region 「D」コマンドでの重複チェックは削除→「L」コマンドで行う
-                //if (lstPastReceivedQrData.Count > 0)
-                //{
-                //    #region 重複チェック
-                //    if(bIsDuplicateCheck)
-                //    {
-                //        Stopwatch sw = new Stopwatch();
-                //        sw.Start();
-                //        bool bFind = lstPastReceivedQrData.Contains(col[2]);
-                //        sw.Stop();
-
-                //        if (bFind)
-                //        {
-                //            //strArray[1] = "重複";
-                //            col[3] = "重複";                           
-                //            CommonModule.OutPutLogFile($"重複データ：{strArray[0]}");
-                //            // シリアルデータ送信（重複エラー発生）
-                //            SendSerialData(PubConstClass.CMD_SEND_g);
-                //        }
-                //        else
-                //        {
-                //            //CommonModule.OutPutLogFile($"最初のデータ：{lstPastReceivedQrData[0]}");
-                //            //CommonModule.OutPutLogFile($"最後のデータ：{lstPastReceivedQrData[lstPastReceivedQrData.Count - 1]}");                        
-                //        }
-                //        CommonModule.OutPutLogFile($"{lstPastReceivedQrData.Count:#,###,##0}件の検索処理時間: {sw.Elapsed.TotalMilliseconds}ミリ秒");
-                //    }
-                //    else
-                //    {
-                //        CommonModule.OutPutLogFile($"重複チェック無し：{strArray[0]}");
-                //    }
-                //    #endregion
-                //}
-                #endregion
                 
                 // トレイ情報
                 col[4] = strArray[3].Trim();
@@ -1487,6 +1628,10 @@ namespace QrSorterInspectionApp
                 string sFolderName = "";
                 string sFileName = "";
                 bool bIsTrayOk = true;
+
+                sFolderName = sFolderNameForOkLog;
+                sFileName = sFileNameForOkLog;
+
                 switch (col[4])
                 {
                     // トレイ情報の確認
@@ -1495,40 +1640,40 @@ namespace QrSorterInspectionApp
                         iBox1Count++;
                         LblBox1.Text = iBox1Count.ToString("0");
                         LblPocket1.Text = col[2];
-                        sFolderName = sFolderName1;
-                        sFileName = sFileNameForGroup1;
+                        //sFolderName = sFolderName1;
+                        //sFileName = sFileNameForGroup1;
                         break;
                     case "2":
                         // ポケット２
                         iBox2Count++;
                         LblBox2.Text = iBox2Count.ToString("0");
                         LblPocket2.Text = col[2];
-                        sFolderName = sFolderName2;
-                        sFileName = sFileNameForGroup2;
+                        //sFolderName = sFolderName2;
+                        //sFileName = sFileNameForGroup2;
                         break;
                     case "3":
                         // ポケット３
                         iBox3Count++;
                         LblBox3.Text = iBox3Count.ToString("0");
                         LblPocket3.Text = col[2];
-                        sFolderName = sFolderName3;
-                        sFileName = sFileNameForGroup3;
+                        //sFolderName = sFolderName3;
+                        //sFileName = sFileNameForGroup3;
                         break;
                     case "4":
                         // ポケット４
                         iBox4Count++;
                         LblBox4.Text = iBox4Count.ToString("0");
                         LblPocket4.Text = col[2];
-                        sFolderName = sFolderName4;
-                        sFileName = sFileNameForGroup4;
+                        //sFolderName = sFolderName4;
+                        //sFileName = sFileNameForGroup4;
                         break;
                     case "5":
                         // ポケット５
                         iBox5Count++;
                         LblBox5.Text = iBox5Count.ToString("0");
                         LblPocket5.Text = col[2];
-                        sFolderName = sFolderName5;
-                        sFileName = sFileNameForGroup5;
+                        //sFolderName = sFolderName5;
+                        //sFileName = sFileNameForGroup5;
                         break;
                     case "E":
                         // リジェクト
@@ -1568,7 +1713,7 @@ namespace QrSorterInspectionApp
                 sLogData += DQ + DQ + ",";                                          // フラップ積算長[mm]			Null
                 sLogData += DQ + DQ + ",";                                          // フラップ検出回数[回]			Null
                 sLogData += DQ + DQ + ",";                                          // イベント（コメント）			Null
-                sLogData += DQ + sDateOfReceipt + DQ + ",";                         // 受領日
+                sLogData += DQ + sReceiptDate + DQ + ",";                           // 受領日
                 sLogData += DQ + PubConstClass.sUserId + DQ + ",";                  // 作業者情報                
                 if (strArray[0].Length >= intPropertyIdNumber)
                 {
@@ -1583,8 +1728,8 @@ namespace QrSorterInspectionApp
                 }                
                 sLogData += DQ + strArray[2] + DQ + ",";                            // エラー
                 sLogData += DQ + DQ + ",";                                          // 生産管理番号					Null
-                sLogData += DQ + sNonDeliveryReason1 + DQ + ",";                    // 仕分１
-                sLogData += DQ + sNonDeliveryReason2 + DQ + ",";                    // 仕分２
+                sLogData += DQ + sBoxLabelNumber + DQ + ",";                        // 箱ラベル番号
+                sLogData += DQ + sInquiryNumber + DQ + ",";                         // 問い合わせ番号
                 sLogData += DQ + DQ + ",";                                          // ファイル名（画像）			Null
                 sLogData += DQ + DQ + ",";                                          // ファイルパス（画像）			Null
                 sLogData += DQ + DQ;                                                // 工場コード					Null
@@ -1617,32 +1762,34 @@ namespace QrSorterInspectionApp
                         }
                     }
 
-                    sSaveFileName = ""; 
-                    sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);                    
-                    sSaveFileName += OK_FOLDER_NAME + sJobFolderName + "\\";
-                    //sSaveFileName += sFolderName + "\\";
-                    //sSaveFileName += sFileName;
+                    //sSaveFileName = ""; 
+                    //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);                    
+                    //sSaveFileName += OK_FOLDER_NAME + sJobFolderName + "\\";
+                    ////sSaveFileName += sFolderName + "\\";
+                    ////sSaveFileName += sFileName;
 
-                    sSaveFileName += sFolderName;
-                    if (!Directory.Exists(sSaveFileName)) 
+                    //sSaveFileName += sFolderName;
+
+
+                    if (!Directory.Exists(sFolderNameForOkLog)) 
                     {
-                        Directory.CreateDirectory(sSaveFileName);
-                        CommonModule.OutPutLogFile($"OKフォルダを作成しました：{sSaveFileName}");
+                        Directory.CreateDirectory(sFolderNameForOkLog);
+                        CommonModule.OutPutLogFile($"OKフォルダを作成しました：{sFolderName}");
                     }
-                    sSaveFileName += "\\" + sFileName;
+                    //sSaveFileName += "\\" + sFileName;
 
 
                     // ヘッダー情報書込処理
-                    if (!File.Exists(sSaveFileName))
+                    if (!File.Exists(sFileNameForOkLog))
                     {
-                        using (StreamWriter sw = new StreamWriter(sSaveFileName, true, Encoding.Default))
+                        using (StreamWriter sw = new StreamWriter(sFileNameForOkLog, true, Encoding.Default))
                         {
                             // 書込ファイルが無かったらヘッダー情報を書込
                             sw.WriteLine(GetHederInfo());
                         }
                     }
                     // 検査データ書込処理
-                    using (StreamWriter sw = new StreamWriter(sSaveFileName, true, Encoding.Default))
+                    using (StreamWriter sw = new StreamWriter(sFileNameForOkLog, true, Encoding.Default))
                     {
                         // OKデータのみを追加モードで書き込む
                         sw.WriteLine(sLogData);
@@ -1677,21 +1824,23 @@ namespace QrSorterInspectionApp
                 // 総数のカウント表示
                 LblTotalCount.Text = (iOKCount + iNGCount).ToString("#,##0");
 
-                sSaveFileName = "";
-                sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-                sSaveFileName += ALL_FOLDER_NAME + sJobFolderName + "\\";
-                sSaveFileName += sFileNameForAllItems;
+                //sSaveFileName = "";
+                //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
+                //sSaveFileName += ALL_FOLDER_NAME + sJobFolderName + "\\";
+                //sSaveFileName += sFileNameForAllItems;
+                //sSaveFileName = sFileNameForOkLog;
+
                 // ヘッダー情報書込処理
-                if (!File.Exists(sSaveFileName))
+                if (!File.Exists(sFileNameForAllLog))
                 {
-                    using (StreamWriter sw = new StreamWriter(sSaveFileName, true, Encoding.Default))
+                    using (StreamWriter sw = new StreamWriter(sFileNameForAllLog, true, Encoding.Default))
                     {
                         // 書込ファイルが無かったらヘッダー情報を書込
                         sw.WriteLine(GetHederInfo());
                     }
                 }
                 // 検査データ書込処理
-                using (StreamWriter sw = new StreamWriter(sSaveFileName, true, Encoding.Default))
+                using (StreamWriter sw = new StreamWriter(sFileNameForAllLog, true, Encoding.Default))
                 {
                     // 全件データを追加モードで書き込む
                     sw.WriteLine(sLogData);
