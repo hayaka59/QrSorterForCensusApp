@@ -407,8 +407,12 @@ namespace QrSorterInspectionApp
                     LblBox4.Font = new Font("メイリオ", 48);
                     LblBox5.Font = new Font("メイリオ", 48);
                 }
-                //　
+
+                //　固定のジョブファイル（国勢調査用JOB設定.csv）の読込処理
                 LoadingFixedJobFile();
+
+                // 箱ラベル番号入力にフォーカスを当てる
+                TxtBoxLabelNumber.Focus();
             }
             catch (Exception ex)
             {
@@ -779,6 +783,18 @@ namespace QrSorterInspectionApp
                     // 停止中
                     SetStatus(0);
                 }
+
+                if (int.Parse(LblBox1.Text) > 850)
+                {
+                    if (LblOffLine.BackColor == Color.Yellow)
+                    {
+                        LblOffLine.BackColor = Color.WhiteSmoke;
+                    }
+                    else
+                    {
+                        LblOffLine.BackColor = Color.Yellow;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -837,41 +853,45 @@ namespace QrSorterInspectionApp
             bool bRetVal = true;
             try
             {
-                // 箱ラベル番号の桁数チェック
-                if (TxtBoxLabelNumber.Text.Trim().Length != 18)
+                if (CmbMode.SelectedIndex == 1)
                 {
-                    bRetVal = false;
-                    //「検査終了」とする
-                    // シリアルデータ送信
-                    SendSerialData(PubConstClass.CMD_SEND_c);
-                    LblError.Visible = false;
-                    // 18桁でない場合
-                    MessageBox.Show("箱ラベル番号は１８桁で入力して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                    // 箱詰めモードの場合のみチェックする
+                    // 箱ラベル番号の桁数チェック
+                    if (TxtBoxLabelNumber.Text.Trim().Length != 18)
+                    {
+                        bRetVal = false;
+                        //「検査終了」とする
+                        // シリアルデータ送信
+                        SendSerialData(PubConstClass.CMD_SEND_c);
+                        LblError.Visible = false;
+                        // 18桁でない場合
+                        MessageBox.Show("箱ラベル番号は、18桁で入力して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
 
-                // 問い合わせ番号の桁数チェック
-                if (!(TxtInquiryNumber.Text.Trim().Length >= 11 && TxtInquiryNumber.Text.Trim().Length <= 13))
-                {
-                    bRetVal = false;
-                    //「検査終了」とする
-                    // シリアルデータ送信
-                    SendSerialData(PubConstClass.CMD_SEND_c);
-                    LblError.Visible = false;
-                    // 11～13桁でない場合
-                    MessageBox.Show("問い合わせ番号は１１～１３桁で入力して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    // 問い合わせ番号の桁数チェック
+                    if (!(TxtInquiryNumber.Text.Trim().Length >= 11 && TxtInquiryNumber.Text.Trim().Length <= 13))
+                    {
+                        bRetVal = false;
+                        //「検査終了」とする
+                        // シリアルデータ送信
+                        SendSerialData(PubConstClass.CMD_SEND_c);
+                        LblError.Visible = false;
+                        // 11～13桁でない場合
+                        MessageBox.Show("問い合わせ番号は、11～13桁で入力して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
 
                 // 読み取り値の桁数チェック
-                if (!(TxtCheckReading.Text.Trim().Length == 3 || TxtCheckReading.Text.Trim().Length == 5))
+                if (!(TxtCheckReading.Text.Trim().Length == 2 || TxtCheckReading.Text.Trim().Length == 5))
                 {
                     bRetVal = false;
                     // シリアルデータ送信
                     SendSerialData(PubConstClass.CMD_SEND_c);
                     LblError.Visible = false;
-                    // 3桁か5桁でない場合
-                    MessageBox.Show("読み取り値は３桁か５桁に設定して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    // 2桁か5桁でない場合
+                    MessageBox.Show("読み取り値は、2桁か 5桁に設定して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                //return true;
+
                 return bRetVal;
             }
             catch (Exception ex)
@@ -1001,42 +1021,55 @@ namespace QrSorterInspectionApp
                         LblStatus.Text = "停止中";
                         LblStatus.BackColor = Color.LightGray;
                         LblStatus.ForeColor = Color.Black;
-                        BtnJobSelect.Enabled = true;
-                        DtpDateReceipt.Enabled = true;
-                        CmbNonDeliveryReasonSorting1.Enabled = true;
-                        CmbNonDeliveryReasonSorting2.Enabled = true;
-                        BtnSetting.Enabled = true;
-                        BtnStartInspection.Enabled = true;
-                        BtnClose.Enabled = true;
 
-                        BtnCounterClear1.Visible = true;
-                        BtnCounterClear2.Visible = true;
-                        BtnCounterClear3.Visible = true;
-                        BtnCounterClear4.Visible = true;
-                        BtnCounterClear5.Visible = true;
-                        BtnRejectCounterClear.Visible = true;
-                        BtnAllCounterClear.Visible = true;
+                        SetControlEnable(true);
+
+                        //BtnJobSelect.Enabled = true;
+                        //DtpDateReceipt.Enabled = true;
+                        //CmbNonDeliveryReasonSorting1.Enabled = true;
+                        //CmbNonDeliveryReasonSorting2.Enabled = true;
+                        //BtnSetting.Enabled = true;
+                        //BtnStartInspection.Enabled = true;
+                        //BtnClose.Enabled = true;
+
+                        //BtnCounterClear1.Visible = true;
+                        //BtnCounterClear2.Visible = true;
+                        //BtnCounterClear3.Visible = true;
+                        //BtnCounterClear4.Visible = true;
+                        //BtnCounterClear5.Visible = true;
+                        //BtnRejectCounterClear.Visible = true;
+                        //BtnAllCounterClear.Visible = true;
                         break;
 
                     case 1:
                         LblStatus.Text = "検査中";
                         LblStatus.BackColor = Color.LightGreen;
                         LblStatus.ForeColor = Color.Black;
-                        BtnJobSelect.Enabled = false;
-                        DtpDateReceipt.Enabled = false;
-                        CmbNonDeliveryReasonSorting1.Enabled = false;
-                        CmbNonDeliveryReasonSorting2.Enabled = false;
-                        BtnSetting.Enabled = false;
-                        BtnStartInspection.Enabled = false;
-                        BtnClose.Enabled = false;
 
-                        BtnCounterClear1.Visible = false;
-                        BtnCounterClear2.Visible = false;
-                        BtnCounterClear3.Visible = false;
-                        BtnCounterClear4.Visible = false;
-                        BtnCounterClear5.Visible = false;
-                        BtnRejectCounterClear.Visible = false;
-                        BtnAllCounterClear.Visible = false;
+                        SetControlEnable(false);
+
+                        //BtnJobSelect.Enabled = false;
+                        //DtpDateReceipt.Enabled = false;
+                        //CmbNonDeliveryReasonSorting1.Enabled = false;
+                        //CmbNonDeliveryReasonSorting2.Enabled = false;
+                        //BtnSetting.Enabled = false;
+                        //BtnStartInspection.Enabled = false;
+                        //BtnClose.Enabled = false;
+
+                        //BtnCounterClear1.Visible = false;
+                        //BtnCounterClear2.Visible = false;
+                        //BtnCounterClear3.Visible = false;
+                        //BtnCounterClear4.Visible = false;
+                        //BtnCounterClear5.Visible = false;
+                        //BtnRejectCounterClear.Visible = false;
+                        //BtnAllCounterClear.Visible = false;
+
+                        //groupBox2.Enabled = false;
+                        //TxtBoxLabelNumber.Enabled = false;
+                        //TxtInquiryNumber.Enabled = false;
+                        //TxtCheckReading.Enabled = false;
+                        //TxtQrReadData.Enabled = false;
+
                         break;
 
                     case 2:
@@ -1061,6 +1094,42 @@ namespace QrSorterInspectionApp
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "【SetStatus】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bEnable"></param>
+        private void SetControlEnable(bool bEnable)
+        {
+            try
+            {
+                BtnJobSelect.Enabled = bEnable;
+                DtpDateReceipt.Enabled = bEnable;
+                CmbNonDeliveryReasonSorting1.Enabled = bEnable;
+                CmbNonDeliveryReasonSorting2.Enabled = bEnable;
+                BtnSetting.Enabled = bEnable;
+                BtnStartInspection.Enabled = bEnable;
+                BtnClose.Enabled = bEnable;
+
+                BtnCounterClear1.Visible = bEnable;
+                BtnCounterClear2.Visible = bEnable;
+                BtnCounterClear3.Visible = bEnable;
+                BtnCounterClear4.Visible = bEnable;
+                BtnCounterClear5.Visible = bEnable;
+                BtnRejectCounterClear.Visible = bEnable;
+                BtnAllCounterClear.Visible = bEnable;
+
+                groupBox2.Enabled = bEnable;
+                TxtBoxLabelNumber.Enabled = bEnable;
+                TxtInquiryNumber.Enabled = bEnable;
+                TxtCheckReading.Enabled = bEnable;
+                TxtQrReadData.Enabled = bEnable;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【SetControlEnable】", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1392,7 +1461,18 @@ namespace QrSorterInspectionApp
                 sData += ",";
                 sData += sPocketInfo;                                               // ポケット情報
                 sData += ",";
-                sData += sArrayPocket[1];                                           // 物件ID
+                // ポケット１かどうかのチェック
+                if (iPocketNumber == 0)
+                {
+                    // ポケット１の場合は、物件IDとして「読取値チェック」をセットする
+                    sData += TxtCheckReading.Text.Trim();
+                }
+                else
+                {
+                    // 物件ID
+                    sData += sArrayPocket[1];
+                }
+                
                 sData += ",";
                 sData += sArrayPocket[2];                                           // 届出日
                 sData += ",";
@@ -2158,48 +2238,71 @@ namespace QrSorterInspectionApp
                     // 「設定」ボタン使用可
                     BtnSetting.Enabled = true;
                     PubConstClass.sJobFileNameFromInspectionForm = sSelectedFile;
-                    // JOB変更フラグON
-                    bIsJobChange = true;
-                    // 各表示カウンタクリア
-                    LblTotalCount.Text = "0";
-                    LblOKCount.Text = "0";
-                    LblNGCount.Text = "0";
-                    // ポケット１～５の表示カウンタクリア
-                    LblBox1.Text = "0";
-                    LblBox2.Text = "0";
-                    LblBox3.Text = "0";
-                    LblBox4.Text = "0";
-                    LblBox5.Text = "0";
-                    LblBoxEject.Text = "0";
-                    // 内部カウンタのクリア
-                    iOKCount = 0;               // OK用カウンタ
-                    iNGCount = 0;               // NG用カウンタ
-                    iBox1Count = 0;             // ボックス１用カウンタ
-                    iBox2Count = 0;             // ボックス２用カウンタ
-                    iBox3Count = 0;             // ボックス３用カウンタ
-                    iBox4Count = 0;             // ボックス４用カウンタ
-                    iBox5Count = 0;             // ボックス５用カウンタ
-                    iBoxECount = 0;             // ボックス（Eject）用カウンタ
-                    intOkSesanCounter = 0;      // OK処理数No.カウンタ
-                    intNgSesanCounter = 0;      // NG処理数No.カウンタ
-                    // 受信データ表示領域のクリア
-                    LblPocket1.Text = "";
-                    LblPocket2.Text = "";
-                    LblPocket3.Text = "";
-                    LblPocket4.Text = "";
-                    LblPocket5.Text = "";
-                    LblPocketEject.Text = "";
-                    // OK履歴とNG履歴のクリア
-                    LsvOKHistory.Items.Clear();
-                    LsvNGHistory.Items.Clear();
 
-                    // 過去に受信したQRデータ一覧のクリア
-                    lstPastReceivedQrData.Clear();
+                    // 内部カウンタと表示をクリアする
+                    ClearCounterAndDisplay();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "【BtnJobSelect_Click】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 内部カウンタと表示をクリアする
+        /// </summary>
+        private void ClearCounterAndDisplay()
+        {
+            try
+            {
+                TxtBoxLabelNumber.Text = "";
+                TxtInquiryNumber.Text = "";
+                TxtCheckReading.Text = "";
+                TxtQrReadData.Text = "";
+                LblQrReadData.Text = "";
+
+                // JOB変更フラグON
+                bIsJobChange = true;
+                // 各表示カウンタクリア
+                LblTotalCount.Text = "0";
+                LblOKCount.Text = "0";
+                LblNGCount.Text = "0";
+                // ポケット１～５の表示カウンタクリア
+                LblBox1.Text = "0";
+                LblBox2.Text = "0";
+                LblBox3.Text = "0";
+                LblBox4.Text = "0";
+                LblBox5.Text = "0";
+                LblBoxEject.Text = "0";
+                // 内部カウンタのクリア
+                iOKCount = 0;               // OK用カウンタ
+                iNGCount = 0;               // NG用カウンタ
+                iBox1Count = 0;             // ボックス１用カウンタ
+                iBox2Count = 0;             // ボックス２用カウンタ
+                iBox3Count = 0;             // ボックス３用カウンタ
+                iBox4Count = 0;             // ボックス４用カウンタ
+                iBox5Count = 0;             // ボックス５用カウンタ
+                iBoxECount = 0;             // ボックス（Eject）用カウンタ
+                intOkSesanCounter = 0;      // OK処理数No.カウンタ
+                intNgSesanCounter = 0;      // NG処理数No.カウンタ
+                                            // 受信データ表示領域のクリア
+                LblPocket1.Text = "";
+                LblPocket2.Text = "";
+                LblPocket3.Text = "";
+                LblPocket4.Text = "";
+                LblPocket5.Text = "";
+                LblPocketEject.Text = "";
+                // OK履歴とNG履歴のクリア
+                LsvOKHistory.Items.Clear();
+                LsvNGHistory.Items.Clear();
+
+                // 過去に受信したQRデータ一覧のクリア
+                lstPastReceivedQrData.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【ClearCounterAndDisplay】", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -2237,11 +2340,12 @@ namespace QrSorterInspectionApp
                 LstSettingInfomation.Items.Clear();
                 LstSettingInfomation.Items.Add("【設定内容】");
                 LstSettingInfomation.Items.Add($"Ｗフィード検査：{sArray[19]}");
-                LstSettingInfomation.Items.Add($"超音波検査　　：{sArray[20]}");
+                //LstSettingInfomation.Items.Add($"超音波検査　　：{sArray[20]}");
                 LstSettingInfomation.Items.Add($"桁数チェック　：{sArray[21]}");
                 LstSettingInfomation.Items.Add($"読取機能　　　：{PubConstClass.lstReadFunctionList[int.Parse(sArray[22])]}");
                 LstSettingInfomation.Items.Add($"読取チェック　：{sArray[5]}");
                 LstSettingInfomation.Items.Add($"読取位置　　　：{sArray[23]} mm");
+                LstSettingInfomation.Items.Add("C/D チェック　：");
 
                 sArray = PubConstClass.lstPocketInfo[0].Split(',');
                 // ポケット①名称
@@ -2623,9 +2727,21 @@ namespace QrSorterInspectionApp
                 {
                     return;
                 }
-                TxtBoxLabelNumber.Text = "";
-                TxtInquiryNumber.Text = "";
-                TxtCheckReading.Text = "";
+                //TxtBoxLabelNumber.Text = "";
+                //TxtInquiryNumber.Text = "";
+                //TxtCheckReading.Text = "";
+                //TxtQrReadData.Text = "";
+                //LblQrReadData.Text = "";
+
+                // 内部カウンタと表示をクリアする
+                ClearCounterAndDisplay();
+
+                //LblTotalCount.Text = "0";
+                //LblOKCount.Text = "0";
+                //LblNGCount.Text = "0";                
+                //LblBox1.Text = "0";
+                //LblBoxEject.Text = "0";
+                //LblPocket1.Text = "";
             }
             catch (Exception ex)
             {
