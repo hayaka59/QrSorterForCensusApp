@@ -356,21 +356,21 @@ namespace QrSorterSimulatorApp
                 }
                 else
                 {
-                    //// 読取値（31桁）：物件ID（5桁）＋（1st/2st）＋局出し日（YYYYMMDD）＋ユニークキー（17桁）
-                    //sData = TxtPropertyId.Text.Trim();                                          // 物件ID
-                    //sData += "1";                                                               // （1st/2st）
-                    //sData += dtTimPickPostalDate.Value.ToString("yyyyMMdd");                    // 局出し日（YYYYMMDD）
-                    //sData += "-" + DateTime.Now.ToString("yyMMdd_");                             // ユニークキー（7桁）                    
-                    ////sData += int.Parse(TxtUniqueKey.Text).ToString().PadLeft(CmbQRDigit.SelectedIndex + 9, '0') + ",";  // ユニークキー（xx桁）
-                    ////sData += int.Parse(TxtUniqueKey.Text).ToString().PadLeft(CmbQRDigit.SelectedIndex + 9 - 7, '0') + "       ,";  // ユニークキー（xx桁）
+                    // 読取値（31桁）：物件ID（5桁）＋（1st/2st）＋局出し日（YYYYMMDD）＋ユニークキー（17桁）
+                    sData = TxtPropertyId.Text.Trim();                                          // 物件ID
+                    sData += "1";                                                               // （1st/2st）
+                    sData += dtTimPickPostalDate.Value.ToString("yyyyMMdd");                    // 局出し日（YYYYMMDD）
+                    sData += "-" + DateTime.Now.ToString("yyMMdd_");                             // ユニークキー（7桁）                    
+                    //sData += int.Parse(TxtUniqueKey.Text).ToString().PadLeft(CmbQRDigit.SelectedIndex + 9, '0') + ",";  // ユニークキー（xx桁）
+                    //sData += int.Parse(TxtUniqueKey.Text).ToString().PadLeft(CmbQRDigit.SelectedIndex + 9 - 7, '0') + "       ,";  // ユニークキー（xx桁）
                     //sData += TxtUniqueKey.Text + "       ,";  // ユニークキー（xx桁）
+                    sData += TxtUniqueKey.Text+",";  // ユニークキー（xx桁）
+                    // ユニークキーのインクリメント                        
+                    //TxtUniqueKey.Text = (int.Parse(TxtUniqueKey.Text) + 1).ToString().PadLeft(CmbQRDigit.SelectedIndex + 9, '0');
 
-                    //// ユニークキーのインクリメント                        
-                    ////TxtUniqueKey.Text = (int.Parse(TxtUniqueKey.Text) + 1).ToString().PadLeft(CmbQRDigit.SelectedIndex + 9, '0');
+                    //sData = TxtUniqueKey.Text + ",";
 
-                    sData = TxtUniqueKey.Text + ",";
-                    
-                    TxtUniqueKey.Text = (int.Parse(TxtUniqueKey.Text) + 1).ToString();
+                    //TxtUniqueKey.Text = (int.Parse(TxtUniqueKey.Text) + 1).ToString();
                 }
 
                 // 判定（OK="0"/NG="1"）
@@ -681,7 +681,8 @@ namespace QrSorterSimulatorApp
                 sData += dtTimPickPostalDate.Value.ToString("yyyyMMdd");                // 局出し日（YYYYMMDD）
                 sData += "-" + DateTime.Now.ToString("yyMMdd_");                        // ユニークキー（8桁）
                 //sData += int.Parse(TxtUniqueKey.Text).ToString("00000000000000000");    // ユニークキー（17桁）
-                sData += int.Parse(TxtUniqueKey.Text).ToString().PadLeft(CmbQRDigit.SelectedIndex, '0') + ",";  // ユニークキー（17桁）
+                sData += int.Parse(TxtUniqueKey.Text).ToString("000000000");            // ユニークキー（9桁）
+                //sData += int.Parse(TxtUniqueKey.Text).ToString().PadLeft(CmbQRDigit.SelectedIndex, '0') + ",";  // ユニークキー（17桁）
 
                 // 送信データのセット
                 byte[] dat = Encoding.GetEncoding("SHIFT-JIS").GetBytes(sData + "\r");
