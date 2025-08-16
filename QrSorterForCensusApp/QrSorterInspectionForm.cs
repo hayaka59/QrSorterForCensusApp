@@ -2251,6 +2251,19 @@ namespace QrSorterInspectionApp
         {
             try
             {
+
+                sProcessingModeName = "";     // 処理モード名
+                sProcessingDate = "";         // 処理日
+                sBoxLabelNumber = "";         // 箱ラベル番号
+                sInquiryNumber = "";          // 問い合わせ番号 
+                sReceiptDate = "";            // 受領日
+                sFolderNameForOkLog = "";     // OK用の操作ログファイル名
+                sFolderNameForAllLog = "";    // 全件用の操作ログファイル名
+                sFolderNameForErrorLog = "";  // エラーログファイル名
+                sFileNameForOkLog = "";       // OK用の操作ログファイル名
+                sFileNameForAllLog = "";      // 全件用の操作ログファイル名
+                sFileNameForErrorLog = "";    // エラーログファイル名
+
                 TxtBoxLabelNumber.Text = "";
                 TxtInquiryNumber.Text = "";
                 TxtCheckReading.Text = "";
