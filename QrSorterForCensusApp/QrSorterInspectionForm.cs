@@ -1260,6 +1260,12 @@ namespace QrSorterInspectionApp
                         break;
 
                     case PubConstClass.CMD_RECIEVE_B:
+                        if (bManualEntryFlg)
+                        {
+                            MyProcStop();
+                            // シリアルデータ送信
+                            SendSerialData(PubConstClass.CMD_SEND_c);
+                        }
                         // 開始コマンド
                         if (CheckNumberOfDigits())
                         {
