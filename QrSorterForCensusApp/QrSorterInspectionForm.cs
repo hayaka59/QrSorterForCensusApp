@@ -1352,17 +1352,18 @@ namespace QrSorterInspectionApp
                     sData += sArrayJob[7].PadLeft(3, '0');            // (04) QR読取項目1開始：2桁→3桁
                     sData += ",";
                     // (05) QR読取項目1桁数
+                    //sData += sArrayJob[8].PadLeft(2, '0');            // (05) QR読取項目1桁数：2桁                    
                     if (TxtCheckReading.Text.Trim().Length == 5)
                     {
-                        sData += "5";                               // 5桁
+                        sData += "05";                               // 5桁
                     }
                     else if(TxtCheckReading.Text.Trim().Length == 2)
                     {
-                        sData += "2";                               // 2桁
+                        sData += "02";                               // 2桁
                     }
                     else
                     {
-                        sData += "5";                               // 5桁
+                        sData += "05";                               // 5桁
                     }
                     //sData += sArrayJob[8].PadLeft(2, '0');            // (05) QR読取項目1桁数：2桁                    
                     
