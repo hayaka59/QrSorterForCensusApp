@@ -57,22 +57,19 @@ namespace QrSorterInspectionApp
         private string sFileNameForGroup5;      // グループ５操作ログファイル名
 
         #region ログ保存関係
-
         private string sProcessingModeName;     // 処理モード名
         private string sProcessingDate;         // 処理日
-
         private string sBoxLabelNumber;         // 箱ラベル番号
         private string sInquiryNumber;          // 問い合わせ番号 
         private string sReceiptDate;            // 受領日
-
         private string sFolderNameForOkLog;     // OK用の操作ログファイル名
         private string sFolderNameForAllLog;    // 全件用の操作ログファイル名
         private string sFolderNameForErrorLog;  // エラーログファイル名
-
         private string sFileNameForOkLog;       // OK用の操作ログファイル名
         private string sFileNameForAllLog;      // 全件用の操作ログファイル名
         private string sFileNameForErrorLog;    // エラーログファイル名
         #endregion
+        private bool bManualEntryFlg = false;
 
         private byte[] buffer = new byte[1024];
         private int bufferIndex = 0;
@@ -226,7 +223,7 @@ namespace QrSorterInspectionApp
                 LstSettingInfomation.Items.Add("読取機能　　　：");
                 LstSettingInfomation.Items.Add("読取チェック　：");
                 LstSettingInfomation.Items.Add("読取位置　　　：");
-                LstSettingInfomation.Items.Add("C/D チェック　：");
+                //LstSettingInfomation.Items.Add("C/D チェック　：");
 
                 // 過去に受信したQRデータ一覧のクリア
                 lstPastReceivedQrData.Clear();
@@ -882,14 +879,16 @@ namespace QrSorterInspectionApp
                 }
 
                 // 読み取り値の桁数チェック
-                if (!(TxtCheckReading.Text.Trim().Length == 2 || TxtCheckReading.Text.Trim().Length == 5))
+                if (!(TxtCheckReading.Text.Trim() == "" || 
+                      TxtCheckReading.Text.Trim().Length == 2 || 
+                      TxtCheckReading.Text.Trim().Length == 5))
                 {
                     bRetVal = false;
                     // シリアルデータ送信
                     SendSerialData(PubConstClass.CMD_SEND_c);
                     LblError.Visible = false;
                     // 2桁か5桁でない場合
-                    MessageBox.Show("読み取り値は、2桁か 5桁に設定して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("読み取り値は、空白か、2桁か 5桁に設定して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
                 return bRetVal;
@@ -1090,7 +1089,7 @@ namespace QrSorterInspectionApp
                 TxtBoxLabelNumber.Enabled = bEnable;
                 TxtInquiryNumber.Enabled = bEnable;
                 TxtCheckReading.Enabled = bEnable;
-                TxtQrReadData.Enabled = bEnable;
+                //TxtQrReadData.Enabled = bEnable;
             }
             catch (Exception ex)
             {
@@ -1258,6 +1257,12 @@ namespace QrSorterInspectionApp
                         break;
 
                     case PubConstClass.CMD_RECIEVE_B:
+                        if (bManualEntryFlg)
+                        {
+                            MyProcStop();
+                            // シリアルデータ送信
+                            SendSerialData(PubConstClass.CMD_SEND_c);
+                        }
                         // 開始コマンド
                         if (CheckNumberOfDigits())
                         {
@@ -1342,8 +1347,21 @@ namespace QrSorterInspectionApp
                     sData += sArrayJob[5] == "OFF" ? "0" : "1";       // (03) 読取チェック   ：1桁
                     sData += ","; 
                     sData += sArrayJob[7].PadLeft(3, '0');            // (04) QR読取項目1開始：2桁→3桁
-                    sData += ","; 
-                    sData += sArrayJob[8].PadLeft(2, '0');            // (05) QR読取項目1桁数：2桁                    
+                    sData += ",";
+                    // (05) QR読取項目1桁数
+                    //sData += sArrayJob[8].PadLeft(2, '0');            // (05) QR読取項目1桁数：2桁                    
+                    if (TxtCheckReading.Text.Trim().Length == 5)
+                    {
+                        sData += "05";                               // 5桁
+                    }
+                    else if(TxtCheckReading.Text.Trim().Length == 2)
+                    {
+                        sData += "02";                               // 2桁
+                    }
+                    else
+                    {
+                        sData += "05";                               // 5桁
+                    }                    
                     sData += ","; 
                     sData += sArrayJob[10].PadLeft(3, '0');           // (06) QR読取項目2開始：2桁→3桁
                     sData += ","; 
@@ -1368,6 +1386,9 @@ namespace QrSorterInspectionApp
                     sData += sArrayJob[22];                           // (16) 読取機能　　　 ：1桁
                     sData += ",";
                     sData += sArrayJob[23].PadLeft(3, '0');           // (17) 読取位置　　　 ：3桁
+                    sData += ",";
+                    sData += ChkCDCheck.Checked == true ? "1" : "0";    // (18) C/Dチェックの有無：1桁
+                    sData += ",";
 
                     // シリアルデータ送信
                     SendSerialData(sData);
@@ -1586,22 +1607,26 @@ namespace QrSorterInspectionApp
                     CommonModule.OutPutLogFile($"エラー内容：{sErrorCode},未定義エラー番号,未定義のエラー番号です。");
                     sErrorData += "未定義エラー番号,未定義のエラー番号です。";
                 }
-                
-                //// エラーフォルダ及びエラーファイル名のチェック
-                //if (sJobFolderName == null || sFileNameForErrorLog == null) {
-                //    // NULLの場合
-                //    sJobFolderName = "JOB未選択0000000000";
-                //    sFileNameForErrorLog = "JOB未選択0000000000_0_0_errorlog_" + DateTime.Now.ToString("yyyyMMdd")+"000000.csv";
-                //    CommonModule.OutPutLogFile($"エラーファイル名を作成しました：{sFileNameForErrorLog}");
-                //    //string sFolderName = "";
-                //    //sFolderName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-                
-                //    //string sFolderName += sFolderNameForErrorLog + sJobFolderName + "\\";
-                //    if (!Directory.Exists(sFolderNameForErrorLog)) { 
-                //        Directory.CreateDirectory(sFolderNameForErrorLog);
-                //        CommonModule.OutPutLogFile($"エラーフォルダを作成しました：{sFolderNameForErrorLog}");
-                //    }
-                //}
+
+                // エラーフォルダ及びエラーファイル名のチェック
+                if (sJobFolderName == null || sFileNameForErrorLog == null)
+                {
+                    // NULLの場合
+                    sJobFolderName = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
+                    sJobFolderName += $"エラーログ\\{sProcessingDate}\\";
+                    //sJobFolderName = $"C:\\QRソーター\\エラーログ\\20250816";
+                    sFileNameForErrorLog = $"処理開始前_errorlog_{sReceiptDate}_{DateTime.Now.ToString("yyyyMMdd")}.csv" + "000000.csv";
+                    CommonModule.OutPutLogFile($"エラーファイル名を作成しました：{sFileNameForErrorLog}");
+                    //string sFolderName = "";
+                    //sFolderName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
+
+                    //string sFolderName += sFolderNameForErrorLog + sJobFolderName + "\\";
+                    if (!Directory.Exists(sFolderNameForErrorLog))
+                    {
+                        Directory.CreateDirectory(sFolderNameForErrorLog);
+                        CommonModule.OutPutLogFile($"エラーフォルダを作成しました：{sFolderNameForErrorLog}");
+                    }
+                }
 
                 // エラーファイル名の生成
                 //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
@@ -1915,7 +1940,7 @@ namespace QrSorterInspectionApp
                 if (lstPastReceivedQrData.Count > 0)
                 {
                     #region 重複チェック
-                    if (!bIsDuplicateCheck)
+                    if (bIsDuplicateCheck)
                     {
                         Stopwatch sw = new Stopwatch();
                         sw.Start();
@@ -2221,6 +2246,19 @@ namespace QrSorterInspectionApp
         {
             try
             {
+
+                sProcessingModeName = "";     // 処理モード名
+                sProcessingDate = "";         // 処理日
+                sBoxLabelNumber = "";         // 箱ラベル番号
+                sInquiryNumber = "";          // 問い合わせ番号 
+                sReceiptDate = "";            // 受領日
+                sFolderNameForOkLog = "";     // OK用の操作ログファイル名
+                sFolderNameForAllLog = "";    // 全件用の操作ログファイル名
+                sFolderNameForErrorLog = "";  // エラーログファイル名
+                sFileNameForOkLog = "";       // OK用の操作ログファイル名
+                sFileNameForAllLog = "";      // 全件用の操作ログファイル名
+                sFileNameForErrorLog = "";    // エラーログファイル名
+
                 TxtBoxLabelNumber.Text = "";
                 TxtInquiryNumber.Text = "";
                 TxtCheckReading.Text = "";
@@ -2310,7 +2348,7 @@ namespace QrSorterInspectionApp
                 LstSettingInfomation.Items.Add($"読取機能　　　：{PubConstClass.lstReadFunctionList[int.Parse(sArray[22])]}");
                 LstSettingInfomation.Items.Add($"読取チェック　：{sArray[5]}");
                 LstSettingInfomation.Items.Add($"読取位置　　　：{sArray[23]} mm");
-                LstSettingInfomation.Items.Add("C/D チェック　：");
+                //LstSettingInfomation.Items.Add("C/D チェック　：");
 
                 sArray = PubConstClass.lstPocketInfo[0].Split(',');
                 // ポケット①名称
@@ -2580,12 +2618,14 @@ namespace QrSorterInspectionApp
                     sMessage = "受付モード";
                     TxtBoxLabelNumber.Enabled = false;
                     TxtInquiryNumber.Enabled = false;
+                    TxtCheckReading.Enabled = false;
                 }
                 else
                 {
                     sMessage = "箱詰めモード";
                     TxtBoxLabelNumber.Enabled = true;
                     TxtInquiryNumber.Enabled = true;
+                    TxtCheckReading.Enabled = true;
                 }
                 LblOffLine.Text = sMessage;
 
@@ -2645,22 +2685,103 @@ namespace QrSorterInspectionApp
                     //e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
 
                     string input = TxtQrReadData.Text;
-                    string sCheckDigit = GetCheckDigit(input);
-                    //TxtCheckReading.Text = $"チェックデジット：{sCheckDigit}";
-
-                    DialogResult dialogResult = MessageBox.Show($"チェックデジットは、「{sCheckDigit}」です。登録しますか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-                    if(dialogResult == DialogResult.Cancel)
+                    if (!(input.Length == 16 || input.Length == 20))
                     {
-                        // キャンセルされた場合は何もしない
+                        MessageBox.Show($"入力したQRデータ（{input}) は、16桁あるいは、20桁のデータを読み取って下さい", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        TxtQrReadData.Text = "";
+                        TxtQrReadData.Focus();
                         return;
                     }
-                    // 重複チェック
+
+
+                    if (lstPastReceivedQrData.Count > 0)
+                    {
+                        #region 重複チェック
+                        if (bIsDuplicateCheck)
+                        {
+                            Stopwatch sw = new Stopwatch();
+                            sw.Start();
+                            bool bFind = lstPastReceivedQrData.Contains(input);
+                            sw.Stop();
+
+                            if (bFind)
+                            {
+                                CommonModule.OutPutLogFile($"重複データ：{input}");
+                                MessageBox.Show($"入力したQRデータ（{input}) は重複しています", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                TxtQrReadData.Text = "";
+                                TxtQrReadData.Focus();
+                                return;
+                            }
+                            else
+                            {
+                                CommonModule.OutPutLogFile($"重複データ無し：{lstPastReceivedQrData[0]}");
+                            }
+                            CommonModule.OutPutLogFile($"{lstPastReceivedQrData.Count:#,###,##0}件の検索処理時間: {sw.Elapsed.TotalMilliseconds}ミリ秒");
+                        }
+                        else
+                        {
+                            CommonModule.OutPutLogFile($"重複チェック無しモード：{input}");
+                        }
+                        #endregion
+                    }
+                    else
+                    {
+                        CommonModule.OutPutLogFile($"最初のデータなので重複無し：{input}");
+                    }
+
+                    if (ChkCDCheck.Checked == true)
+                    {
+                        string sCheckDigit = GetCheckDigit(input);
+                        if (sCheckDigit != input.Substring(input.Length - 1, 1))
+                        {
+                            MessageBox.Show($"チェックデジット（{sCheckDigit}）が異なります", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            TxtQrReadData.Text = "";
+                            TxtQrReadData.Focus();
+                            return;
+                        }
+                    }
+
+                    if (TxtCheckReading.Text.Trim() != "")
+                    {
+                        // 照合チェック
+                        int iKeta = TxtCheckReading.Text.Trim().Length;
+                        if (TxtQrReadData.Text.Substring(0, iKeta) != TxtCheckReading.Text)
+                        {
+                            MessageBox.Show($"照合エラー：（{TxtCheckReading.Text}）が異なります", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            TxtQrReadData.Text = "";
+                            TxtQrReadData.Focus();
+                            return;
+                        }
+                    }
+
+                    // 手動登録モードON
+                    bManualEntryFlg = true;
+                    DialogResult dialogResult = MessageBox.Show($"読取りデータ（{input}を登録しますか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                    if (dialogResult == DialogResult.Cancel)
+                    {
+                        TxtQrReadData.Text = "";
+                        TxtQrReadData.Focus();
+                        // 手動登録モードOFF
+                        bManualEntryFlg = false;
+                        return;
+                    }
+                    else
+                    {
+                        TxtQrReadData.Text = "";
+                        TxtQrReadData.Focus();
+                        // 手動登録モードOFF
+                        bManualEntryFlg = false;
+                    }
+                    //// 手動登録モードOFF
+                    //bManualEntryFlg = false;
 
                     // 登録処理
                     string sData = $"{input},0,000,1,\r";
                     //iStatus = 3;
                     SetStatus(3);
                     MyProcData(sData);
+                    TxtQrReadData.Text = "";
+                    TxtQrReadData.Focus();
                     //iStatus = 0;
                 }
             }

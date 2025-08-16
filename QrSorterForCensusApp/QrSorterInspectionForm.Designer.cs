@@ -126,6 +126,7 @@
             this.TxtBoxLabelNumber = new System.Windows.Forms.TextBox();
             this.TxtInquiryNumber = new System.Windows.Forms.TextBox();
             this.TxtCheckReading = new System.Windows.Forms.TextBox();
+            this.ChkCDCheck = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -1113,7 +1114,7 @@
             // 
             this.BtnSetting.Font = new System.Drawing.Font("メイリオ", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.BtnSetting.Image = global::QrSorterInspectionApp.Properties.Resources.setting_small;
-            this.BtnSetting.Location = new System.Drawing.Point(946, 189);
+            this.BtnSetting.Location = new System.Drawing.Point(987, 189);
             this.BtnSetting.Name = "BtnSetting";
             this.BtnSetting.Size = new System.Drawing.Size(178, 46);
             this.BtnSetting.TabIndex = 306;
@@ -1311,12 +1312,26 @@
             this.TxtCheckReading.TabIndex = 358;
             this.TxtCheckReading.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtCheckReading_KeyDown);
             // 
+            // ChkCDCheck
+            // 
+            this.ChkCDCheck.AutoSize = true;
+            this.ChkCDCheck.Checked = true;
+            this.ChkCDCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ChkCDCheck.Font = new System.Drawing.Font("メイリオ", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ChkCDCheck.Location = new System.Drawing.Point(829, 199);
+            this.ChkCDCheck.Name = "ChkCDCheck";
+            this.ChkCDCheck.Size = new System.Drawing.Size(147, 27);
+            this.ChkCDCheck.TabIndex = 359;
+            this.ChkCDCheck.Text = "C/Dチェックする";
+            this.ChkCDCheck.UseVisualStyleBackColor = true;
+            // 
             // QrSorterInspectionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.ControlBox = false;
+            this.Controls.Add(this.ChkCDCheck);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label19);
             this.Controls.Add(this.label17);
@@ -1526,5 +1541,6 @@
         private System.Windows.Forms.TextBox TxtInquiryNumber;
         private System.Windows.Forms.TextBox TxtCheckReading;
         private System.Windows.Forms.TextBox TxtQrReadData;
+        private System.Windows.Forms.CheckBox ChkCDCheck;
     }
 }
