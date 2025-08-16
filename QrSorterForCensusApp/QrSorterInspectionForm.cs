@@ -1945,7 +1945,7 @@ namespace QrSorterInspectionApp
                 if (lstPastReceivedQrData.Count > 0)
                 {
                     #region 重複チェック
-                    if (!bIsDuplicateCheck)
+                    if (bIsDuplicateCheck)
                     {
                         Stopwatch sw = new Stopwatch();
                         sw.Start();
