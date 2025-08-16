@@ -1092,7 +1092,7 @@ namespace QrSorterInspectionApp
                 TxtBoxLabelNumber.Enabled = bEnable;
                 TxtInquiryNumber.Enabled = bEnable;
                 TxtCheckReading.Enabled = bEnable;
-                TxtQrReadData.Enabled = bEnable;
+                //TxtQrReadData.Enabled = bEnable;
             }
             catch (Exception ex)
             {
