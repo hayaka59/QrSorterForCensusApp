@@ -22,7 +22,7 @@ namespace QrSorterInspectionApp
 
             // フォーム表示位置指定（画面の中央に表示）
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = new Point((1920 - this.Width) / 2, (1080 - this.Height) / 2);
+            this.Location = new Point((1920 - this.Width) / 2, ((1080 - this.Height) / 2) + 300);
             // フォームスタイル設定
             this.MaximizeBox = false;
             this.MinimizeBox = false;
