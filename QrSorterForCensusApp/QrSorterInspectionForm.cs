@@ -1613,21 +1613,25 @@ namespace QrSorterInspectionApp
                     sErrorData += "未定義エラー番号,未定義のエラー番号です。";
                 }
                 
-                //// エラーフォルダ及びエラーファイル名のチェック
-                //if (sJobFolderName == null || sFileNameForErrorLog == null) {
-                //    // NULLの場合
-                //    sJobFolderName = "JOB未選択0000000000";
-                //    sFileNameForErrorLog = "JOB未選択0000000000_0_0_errorlog_" + DateTime.Now.ToString("yyyyMMdd")+"000000.csv";
-                //    CommonModule.OutPutLogFile($"エラーファイル名を作成しました：{sFileNameForErrorLog}");
-                //    //string sFolderName = "";
-                //    //sFolderName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
+                // エラーフォルダ及びエラーファイル名のチェック
+                if (sJobFolderName == null || sFileNameForErrorLog == null)
+                {
+                    // NULLの場合
+                    sJobFolderName = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
+                    sJobFolderName += $"エラーログ\\{sProcessingDate}\\";
+                    //sJobFolderName = $"C:\\QRソーター\\エラーログ\\20250816";
+                    sFileNameForErrorLog = $"処理開始前_errorlog_{sReceiptDate}_{DateTime.Now.ToString("yyyyMMdd")}.csv" + "000000.csv";
+                    CommonModule.OutPutLogFile($"エラーファイル名を作成しました：{sFileNameForErrorLog}");
+                    //string sFolderName = "";
+                    //sFolderName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
                 
-                //    //string sFolderName += sFolderNameForErrorLog + sJobFolderName + "\\";
-                //    if (!Directory.Exists(sFolderNameForErrorLog)) { 
-                //        Directory.CreateDirectory(sFolderNameForErrorLog);
-                //        CommonModule.OutPutLogFile($"エラーフォルダを作成しました：{sFolderNameForErrorLog}");
-                //    }
-                //}
+                    //string sFolderName += sFolderNameForErrorLog + sJobFolderName + "\\";
+                    if (!Directory.Exists(sFolderNameForErrorLog))
+                    {
+                        Directory.CreateDirectory(sFolderNameForErrorLog);
+                        CommonModule.OutPutLogFile($"エラーフォルダを作成しました：{sFolderNameForErrorLog}");
+                    }
+                }
 
                 // エラーファイル名の生成
                 //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
