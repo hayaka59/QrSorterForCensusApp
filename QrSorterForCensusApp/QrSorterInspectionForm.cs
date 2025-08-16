@@ -882,14 +882,16 @@ namespace QrSorterInspectionApp
                 }
 
                 // 読み取り値の桁数チェック
-                if (!(TxtCheckReading.Text.Trim().Length == 2 || TxtCheckReading.Text.Trim().Length == 5))
+                if (!(TxtCheckReading.Text.Trim() == "" || 
+                      TxtCheckReading.Text.Trim().Length == 2 || 
+                      TxtCheckReading.Text.Trim().Length == 5))
                 {
                     bRetVal = false;
                     // シリアルデータ送信
                     SendSerialData(PubConstClass.CMD_SEND_c);
                     LblError.Visible = false;
                     // 2桁か5桁でない場合
-                    MessageBox.Show("読み取り値は、2桁か 5桁に設定して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("読み取り値は、空白か、2桁か 5桁に設定して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
                 return bRetVal;
