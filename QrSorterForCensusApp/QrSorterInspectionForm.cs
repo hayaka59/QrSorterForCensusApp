@@ -226,7 +226,7 @@ namespace QrSorterInspectionApp
                 LstSettingInfomation.Items.Add("読取機能　　　：");
                 LstSettingInfomation.Items.Add("読取チェック　：");
                 LstSettingInfomation.Items.Add("読取位置　　　：");
-                LstSettingInfomation.Items.Add("C/D チェック　：");
+                //LstSettingInfomation.Items.Add("C/D チェック　：");
 
                 // 過去に受信したQRデータ一覧のクリア
                 lstPastReceivedQrData.Clear();
@@ -1342,8 +1342,22 @@ namespace QrSorterInspectionApp
                     sData += sArrayJob[5] == "OFF" ? "0" : "1";       // (03) 読取チェック   ：1桁
                     sData += ","; 
                     sData += sArrayJob[7].PadLeft(3, '0');            // (04) QR読取項目1開始：2桁→3桁
-                    sData += ","; 
-                    sData += sArrayJob[8].PadLeft(2, '0');            // (05) QR読取項目1桁数：2桁                    
+                    sData += ",";
+                    // (05) QR読取項目1桁数
+                    if (TxtCheckReading.Text.Trim().Length == 5)
+                    {
+                        sData += "5";                               // 5桁
+                    }
+                    else if(TxtCheckReading.Text.Trim().Length == 2)
+                    {
+                        sData += "2";                               // 2桁
+                    }
+                    else
+                    {
+                        sData += "5";                               // 5桁
+                    }
+                    //sData += sArrayJob[8].PadLeft(2, '0');            // (05) QR読取項目1桁数：2桁                    
+                    
                     sData += ","; 
                     sData += sArrayJob[10].PadLeft(3, '0');           // (06) QR読取項目2開始：2桁→3桁
                     sData += ","; 
@@ -1368,6 +1382,9 @@ namespace QrSorterInspectionApp
                     sData += sArrayJob[22];                           // (16) 読取機能　　　 ：1桁
                     sData += ",";
                     sData += sArrayJob[23].PadLeft(3, '0');           // (17) 読取位置　　　 ：3桁
+                    sData += ",";
+                    sData += ChkCDCheck.Checked == true ? "1" : "0";    // (18) C/Dチェックの有無：1桁
+                    sData += ",";
 
                     // シリアルデータ送信
                     SendSerialData(sData);
@@ -2310,7 +2327,7 @@ namespace QrSorterInspectionApp
                 LstSettingInfomation.Items.Add($"読取機能　　　：{PubConstClass.lstReadFunctionList[int.Parse(sArray[22])]}");
                 LstSettingInfomation.Items.Add($"読取チェック　：{sArray[5]}");
                 LstSettingInfomation.Items.Add($"読取位置　　　：{sArray[23]} mm");
-                LstSettingInfomation.Items.Add("C/D チェック　：");
+                //LstSettingInfomation.Items.Add("C/D チェック　：");
 
                 sArray = PubConstClass.lstPocketInfo[0].Split(',');
                 // ポケット①名称
