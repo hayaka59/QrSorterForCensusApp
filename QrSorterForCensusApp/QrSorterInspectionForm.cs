@@ -1089,6 +1089,7 @@ namespace QrSorterInspectionApp
                 TxtBoxLabelNumber.Enabled = bEnable;
                 TxtInquiryNumber.Enabled = bEnable;
                 TxtCheckReading.Enabled = bEnable;
+                ChkCDCheck.Enabled = bEnable;
                 //TxtQrReadData.Enabled = bEnable;
             }
             catch (Exception ex)
@@ -2602,9 +2603,9 @@ namespace QrSorterInspectionApp
                 }
 
                 iPreviousIndex = CmbMode.SelectedIndex;
-                TxtBoxLabelNumber.Text = "";
-                TxtInquiryNumber.Text = "";
-                TxtCheckReading.Text = "";
+
+                // 内部カウンタと表示をクリアする
+                ClearCounterAndDisplay();
 
                 if (CmbMode.SelectedIndex == 0)
                 {
@@ -2823,21 +2824,8 @@ namespace QrSorterInspectionApp
                 {
                     return;
                 }
-                //TxtBoxLabelNumber.Text = "";
-                //TxtInquiryNumber.Text = "";
-                //TxtCheckReading.Text = "";
-                //TxtQrReadData.Text = "";
-                //LblQrReadData.Text = "";
-
                 // 内部カウンタと表示をクリアする
                 ClearCounterAndDisplay();
-
-                //LblTotalCount.Text = "0";
-                //LblOKCount.Text = "0";
-                //LblNGCount.Text = "0";                
-                //LblBox1.Text = "0";
-                //LblBoxEject.Text = "0";
-                //LblPocket1.Text = "";
             }
             catch (Exception ex)
             {
