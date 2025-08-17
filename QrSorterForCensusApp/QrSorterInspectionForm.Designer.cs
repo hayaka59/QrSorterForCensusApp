@@ -127,6 +127,7 @@
             this.TxtInquiryNumber = new System.Windows.Forms.TextBox();
             this.TxtCheckReading = new System.Windows.Forms.TextBox();
             this.ChkCDCheck = new System.Windows.Forms.CheckBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -134,6 +135,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // LblVersion
@@ -901,14 +903,13 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.TxtQrReadData);
-            this.groupBox1.Controls.Add(this.LblQrReadData);
             this.groupBox1.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.groupBox1.Location = new System.Drawing.Point(597, 231);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1175, 64);
+            this.groupBox1.Size = new System.Drawing.Size(583, 64);
             this.groupBox1.TabIndex = 335;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "QR読取りデータ";
+            this.groupBox1.Text = "手動登録用のQRデータ読み取り";
             // 
             // TxtQrReadData
             // 
@@ -923,9 +924,9 @@
             // LblQrReadData
             // 
             this.LblQrReadData.BackColor = System.Drawing.Color.White;
-            this.LblQrReadData.Font = new System.Drawing.Font("Yu Gothic UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LblQrReadData.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.LblQrReadData.ForeColor = System.Drawing.Color.Black;
-            this.LblQrReadData.Location = new System.Drawing.Point(606, 19);
+            this.LblQrReadData.Location = new System.Drawing.Point(13, 21);
             this.LblQrReadData.Name = "LblQrReadData";
             this.LblQrReadData.Size = new System.Drawing.Size(555, 35);
             this.LblQrReadData.TabIndex = 324;
@@ -1325,12 +1326,24 @@
             this.ChkCDCheck.Text = "C/Dチェックする";
             this.ChkCDCheck.UseVisualStyleBackColor = true;
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.LblQrReadData);
+            this.groupBox3.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.groupBox3.Location = new System.Drawing.Point(1189, 231);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(583, 64);
+            this.groupBox3.TabIndex = 360;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "QR読取直後のデータ";
+            // 
             // QrSorterInspectionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.ControlBox = false;
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.ChkCDCheck);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label19);
@@ -1438,6 +1451,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1542,5 +1556,6 @@
         private System.Windows.Forms.TextBox TxtCheckReading;
         private System.Windows.Forms.TextBox TxtQrReadData;
         private System.Windows.Forms.CheckBox ChkCDCheck;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }

@@ -1538,24 +1538,24 @@ namespace QrSorterInspectionApp
 
             try
             {
-                sPath = "エラーログファイル\\";
-                if (LblSelectedFile.Text != "")
-                {
-                    sArrayJob = LblSelectedFile.Text.Split('.');
-                    sPath += sArrayJob[0] + "\\";
-                }
-                else
-                {
-                    sArrayJob = ".csv".Split('.');
-                    sPath += "\\";
-                }
+                sPath = "エラーログ\\";
+                //if (LblSelectedFile.Text != "")
+                //{
+                //    sArrayJob = LblSelectedFile.Text.Split('.');
+                //    sPath += sArrayJob[0] + "\\";
+                //}
+                //else
+                //{
+                //    sArrayJob = ".csv".Split('.');
+                //    sPath += "\\";
+                //}
 
-                if (!Directory.Exists(CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) + sPath))
-                {
-                    CommonModule.OutPutLogFile($"【エラーログ】JOB（{sArrayJob[0]}）は、未検査のJOBです");
-                    MessageBox.Show($"JOB（{sArrayJob[0]}）は、未検査のJOBです", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                //if (!Directory.Exists(CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) + sPath))
+                //{
+                //    CommonModule.OutPutLogFile($"【エラーログ】JOB（{sArrayJob[0]}）は、未検査のJOBです");
+                //    MessageBox.Show($"JOB（{sArrayJob[0]}）は、未検査のJOBです", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    return;
+                //}
 
                 // ログファイル一覧格納リストのクリア
                 lstLogFileList.Clear();
@@ -1646,11 +1646,12 @@ namespace QrSorterInspectionApp
                     }
                 }
 
-                if (sArrayJob[0] == "")
-                {
-                    sArrayJob[0] = "指定なし";
-                }
-                LblLogFileCount.Text = $"JOB名（{sArrayJob[0]}）{LsvLogList.Items.Count:#,###} 件";
+                //if (sArrayJob[0] == "")
+                //{
+                //    sArrayJob[0] = "指定なし";
+                //}
+                //LblLogFileCount.Text = $"JOB名（{sArrayJob[0]}）{LsvLogList.Items.Count:#,###} 件";
+                LblLogFileCount.Text = $"{LsvLogList.Items.Count:#,###} 件";
             }
             catch (Exception ex)
             {

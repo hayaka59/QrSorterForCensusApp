@@ -88,13 +88,13 @@
             // CmbLogType
             // 
             this.CmbLogType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CmbLogType.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.CmbLogType.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.CmbLogType.FormattingEnabled = true;
             this.CmbLogType.IntegralHeight = false;
-            this.CmbLogType.ItemHeight = 28;
-            this.CmbLogType.Location = new System.Drawing.Point(16, 22);
+            this.CmbLogType.ItemHeight = 24;
+            this.CmbLogType.Location = new System.Drawing.Point(12, 24);
             this.CmbLogType.Name = "CmbLogType";
-            this.CmbLogType.Size = new System.Drawing.Size(134, 36);
+            this.CmbLogType.Size = new System.Drawing.Size(153, 32);
             this.CmbLogType.TabIndex = 261;
             // 
             // LsvLogContent
@@ -160,7 +160,7 @@
             this.GrpInspectionDate.Controls.Add(this.dtTimePickerTo);
             this.GrpInspectionDate.Controls.Add(this.ChkInspectionDate);
             this.GrpInspectionDate.Controls.Add(this.dtTimePickerFrom);
-            this.GrpInspectionDate.Location = new System.Drawing.Point(1068, 58);
+            this.GrpInspectionDate.Location = new System.Drawing.Point(701, 58);
             this.GrpInspectionDate.Name = "GrpInspectionDate";
             this.GrpInspectionDate.Size = new System.Drawing.Size(407, 85);
             this.GrpInspectionDate.TabIndex = 268;
@@ -215,31 +215,34 @@
             this.LblSelectedFile.BackColor = System.Drawing.Color.White;
             this.LblSelectedFile.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.LblSelectedFile.ForeColor = System.Drawing.Color.Black;
-            this.LblSelectedFile.Location = new System.Drawing.Point(590, 107);
+            this.LblSelectedFile.Location = new System.Drawing.Point(1364, 109);
             this.LblSelectedFile.Name = "LblSelectedFile";
             this.LblSelectedFile.Size = new System.Drawing.Size(298, 36);
             this.LblSelectedFile.TabIndex = 325;
             this.LblSelectedFile.Text = "LblSelectedFile";
             this.LblSelectedFile.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LblSelectedFile.Visible = false;
             // 
             // BtnJobClear
             // 
             this.BtnJobClear.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.BtnJobClear.Location = new System.Drawing.Point(746, 58);
+            this.BtnJobClear.Location = new System.Drawing.Point(1520, 60);
             this.BtnJobClear.Name = "BtnJobClear";
             this.BtnJobClear.Size = new System.Drawing.Size(144, 46);
             this.BtnJobClear.TabIndex = 326;
             this.BtnJobClear.Text = "JOBクリア";
             this.BtnJobClear.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.BtnJobClear.UseVisualStyleBackColor = true;
+            this.BtnJobClear.Visible = false;
             this.BtnJobClear.Click += new System.EventHandler(this.BtnJobClear_Click);
             // 
             // GrpSortBy
             // 
             this.GrpSortBy.Controls.Add(this.CmbSortBy);
-            this.GrpSortBy.Location = new System.Drawing.Point(906, 74);
+            this.GrpSortBy.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.GrpSortBy.Location = new System.Drawing.Point(504, 64);
             this.GrpSortBy.Name = "GrpSortBy";
-            this.GrpSortBy.Size = new System.Drawing.Size(146, 56);
+            this.GrpSortBy.Size = new System.Drawing.Size(175, 70);
             this.GrpSortBy.TabIndex = 272;
             this.GrpSortBy.TabStop = false;
             this.GrpSortBy.Text = "並び順";
@@ -247,13 +250,13 @@
             // CmbSortBy
             // 
             this.CmbSortBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CmbSortBy.Font = new System.Drawing.Font("メイリオ", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.CmbSortBy.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.CmbSortBy.FormattingEnabled = true;
             this.CmbSortBy.IntegralHeight = false;
-            this.CmbSortBy.ItemHeight = 23;
-            this.CmbSortBy.Location = new System.Drawing.Point(7, 15);
+            this.CmbSortBy.ItemHeight = 24;
+            this.CmbSortBy.Location = new System.Drawing.Point(12, 24);
             this.CmbSortBy.Name = "CmbSortBy";
-            this.CmbSortBy.Size = new System.Drawing.Size(133, 31);
+            this.CmbSortBy.Size = new System.Drawing.Size(153, 32);
             this.CmbSortBy.TabIndex = 265;
             // 
             // PicWaitList
@@ -270,7 +273,7 @@
             // 
             this.BtnJobSelect.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.BtnJobSelect.Image = global::QrSorterInspectionApp.Properties.Resources.search_file;
-            this.BtnJobSelect.Location = new System.Drawing.Point(588, 58);
+            this.BtnJobSelect.Location = new System.Drawing.Point(1362, 60);
             this.BtnJobSelect.Name = "BtnJobSelect";
             this.BtnJobSelect.Size = new System.Drawing.Size(144, 46);
             this.BtnJobSelect.TabIndex = 324;
@@ -278,6 +281,7 @@
             this.BtnJobSelect.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.BtnJobSelect.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.BtnJobSelect.UseVisualStyleBackColor = true;
+            this.BtnJobSelect.Visible = false;
             this.BtnJobSelect.Click += new System.EventHandler(this.BtnJobSelect_Click);
             // 
             // BtnUpdate
@@ -361,7 +365,7 @@
             this.groupBox1.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.groupBox1.Location = new System.Drawing.Point(312, 64);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(175, 69);
+            this.groupBox1.Size = new System.Drawing.Size(175, 70);
             this.groupBox1.TabIndex = 354;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "ログ種類選択";

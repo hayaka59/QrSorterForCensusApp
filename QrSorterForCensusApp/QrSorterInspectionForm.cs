@@ -62,25 +62,17 @@ namespace QrSorterInspectionApp
         private string sBoxLabelNumber;         // 箱ラベル番号
         private string sInquiryNumber;          // 問い合わせ番号 
         private string sReceiptDate;            // 受領日
-        private string sFolderNameForOkLog;     // OK用の操作ログファイル名
-        private string sFolderNameForAllLog;    // 全件用の操作ログファイル名
-        private string sFolderNameForErrorLog;  // エラーログファイル名
+        private string sFolderNameForOkLog;     // OK用の操作ログ格納フォルダ名
+        private string sFolderNameForAllLog;    // 全件用の操作ログ格納フォルダ名
+        private string sFolderNameForErrorLog;  // エラーログ格納フォルダ名
         private string sFileNameForOkLog;       // OK用の操作ログファイル名
         private string sFileNameForAllLog;      // 全件用の操作ログファイル名
         private string sFileNameForErrorLog;    // エラーログファイル名
         #endregion
-        private bool bManualEntryFlg = false;
+        private bool bManualEntryFlg = false;   // 手動登録中フラグ
 
         private byte[] buffer = new byte[1024];
         private int bufferIndex = 0;
-
-        //private string sFileNameForOkLog;       // OK用の操作ログファイル名
-        //private string sFileNameForAllItems;    // 全件用の操作ログファイル名
-        //private string sFileNameForErrorLog;    // エラーログファイル名
-
-        //private string OK_FOLDER_NAME = "QRソーター設定検査ログ（OKのみ）\\";
-        //private string ALL_FOLDER_NAME = "QRソーター設定検査ログ（全件）\\";
-        //private string ERROR_FOLDER_NAME = "エラーログファイル\\";
 
         public QrSorterInspectionForm()
         {
@@ -232,21 +224,17 @@ namespace QrSorterInspectionApp
                 PubConstClass.sPrevNonDelivery1 = "";    // 前回の不着事由仕分け１
                 PubConstClass.sPrevNonDelivery2 = "";    // 前回の不着事由仕分け２
 
-                #region テスト確認用に過去に受信したQRデータ一覧（100万件）を作成する
-                //string s1 = DateTime.Now.ToString("yyyyMMdd");
-                //string s2 = DateTime.Now.ToString("yyMMdd");
-                //Stopwatch sw = new Stopwatch();
-                //sw.Start();
-                //// 100万件の過去に受信したQRデータを作成する
-                //for (int iIndex = 1; iIndex <= 1000000; iIndex++)
-                //{
-                //    lstPastReceivedQrData.Add($"D86571{s1}-{s2}_{iIndex:0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000}");
-                //}
-                //sw.Stop();
-                //CommonModule.OutPutLogFile($"最初のQRデータ：{lstPastReceivedQrData[0]}");
-                //CommonModule.OutPutLogFile($"最後のQRデータ：{lstPastReceivedQrData[lstPastReceivedQrData.Count - 1]}");
-                //CommonModule.OutPutLogFile($"{lstPastReceivedQrData.Count:#,###,##0}件作成処理時間: {sw.Elapsed.TotalMilliseconds}ミリ秒");
-                #endregion
+                // yyyyMMdd HHmmss形式で現在日時を取得
+                // 
+                //// エラーログ用のログ保存用フォルダの作成
+                sFolderNameForErrorLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+                                         "エラーログ\\" + DateTime.Now.ToString("yyyyMMdd");
+                if (Directory.Exists(sFolderNameForErrorLog) == false)
+                {
+                    Directory.CreateDirectory(sFolderNameForErrorLog);
+                }
+                sFileNameForErrorLog = $"国勢調査用_errorlog_{DateTime.Now.ToString("yyyyMMdd")}_{DateTime.Now.ToString("yyyyMMdd")}121234.csv";
+
 
                 // 停止中
                 SetStatus(0);
@@ -477,13 +465,13 @@ namespace QrSorterInspectionApp
                     Directory.CreateDirectory(sFolderNameForAllLog);
                 }
 
-                // エラーログ用のログ保存用フォルダの作成
-                sFolderNameForErrorLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
-                                         "エラーログ\\" + sProcessingDate;
-                if (Directory.Exists(sFolderNameForErrorLog) == false)
-                {
-                    Directory.CreateDirectory(sFolderNameForErrorLog);
-                }
+                //// エラーログ用のログ保存用フォルダの作成
+                //sFolderNameForErrorLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+                //                         "エラーログ\\" + sProcessingDate;
+                //if (Directory.Exists(sFolderNameForErrorLog) == false)
+                //{
+                //    Directory.CreateDirectory(sFolderNameForErrorLog);
+                //}
 
                 string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
 
@@ -1089,6 +1077,7 @@ namespace QrSorterInspectionApp
                 TxtBoxLabelNumber.Enabled = bEnable;
                 TxtInquiryNumber.Enabled = bEnable;
                 TxtCheckReading.Enabled = bEnable;
+                ChkCDCheck.Enabled = bEnable;
                 //TxtQrReadData.Enabled = bEnable;
             }
             catch (Exception ex)
@@ -1259,6 +1248,7 @@ namespace QrSorterInspectionApp
                     case PubConstClass.CMD_RECIEVE_B:
                         if (bManualEntryFlg)
                         {
+                            // 手動登録中は検査開始不可とする
                             MyProcStop();
                             // シリアルデータ送信
                             SendSerialData(PubConstClass.CMD_SEND_c);
@@ -1266,7 +1256,7 @@ namespace QrSorterInspectionApp
                         // 開始コマンド
                         if (CheckNumberOfDigits())
                         {
-                            // 桁数チェックでOKならば、、、
+                            // 桁数チェックでOKの場合は検査開始
                             MyProcStart();
                         }
                         break;
@@ -1609,7 +1599,7 @@ namespace QrSorterInspectionApp
                 }
 
                 // エラーフォルダ及びエラーファイル名のチェック
-                if (sJobFolderName == null || sFileNameForErrorLog == null)
+                if (sFolderNameForErrorLog == null || sFileNameForErrorLog == null)
                 {
                     // NULLの場合
                     sJobFolderName = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
@@ -1631,7 +1621,7 @@ namespace QrSorterInspectionApp
                 // エラーファイル名の生成
                 //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
                 //sSaveFileName += sFolderNameForErrorLog + sJobFolderName + "\\";
-                sSaveFileName = sFileNameForErrorLog;
+                sSaveFileName = $"{sFolderNameForErrorLog}\\{sFileNameForErrorLog}";
 
                 // エラーデータ書込処理
                 using (StreamWriter sw = new StreamWriter(sSaveFileName, true, Encoding.Default))
@@ -1680,6 +1670,13 @@ namespace QrSorterInspectionApp
                     SendSerialData(PubConstClass.CMD_SEND_e);
                     return;
                 }
+                if (sFolderNameForOkLog == null || sFileNameForOkLog == null)
+                {
+                    //MessageBox.Show("検査前の設定を行ってください", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    CommonModule.OutPutLogFile($"データ（{sData}）を受信したが、sFolderNameForOkLog または sFileNameForOkLog が、NULLです");
+                    return;
+                }
+
                 sWriteDate = DateTime.Now.ToString("yyyy/MM/dd");
                 sWriteTime = DateTime.Now.ToString("HH:mm:ss");
                
@@ -1710,40 +1707,30 @@ namespace QrSorterInspectionApp
                         iBox1Count++;
                         LblBox1.Text = iBox1Count.ToString("0");
                         LblPocket1.Text = col[2];
-                        //sFolderName = sFolderName1;
-                        //sFileName = sFileNameForGroup1;
                         break;
                     case "2":
                         // ポケット２
                         iBox2Count++;
                         LblBox2.Text = iBox2Count.ToString("0");
                         LblPocket2.Text = col[2];
-                        //sFolderName = sFolderName2;
-                        //sFileName = sFileNameForGroup2;
                         break;
                     case "3":
                         // ポケット３
                         iBox3Count++;
                         LblBox3.Text = iBox3Count.ToString("0");
                         LblPocket3.Text = col[2];
-                        //sFolderName = sFolderName3;
-                        //sFileName = sFileNameForGroup3;
                         break;
                     case "4":
                         // ポケット４
                         iBox4Count++;
                         LblBox4.Text = iBox4Count.ToString("0");
                         LblPocket4.Text = col[2];
-                        //sFolderName = sFolderName4;
-                        //sFileName = sFileNameForGroup4;
                         break;
                     case "5":
                         // ポケット５
                         iBox5Count++;
                         LblBox5.Text = iBox5Count.ToString("0");
                         LblPocket5.Text = col[2];
-                        //sFolderName = sFolderName5;
-                        //sFileName = sFileNameForGroup5;
                         break;
                     case "E":
                         // リジェクト
@@ -1832,22 +1819,11 @@ namespace QrSorterInspectionApp
                         }
                     }
 
-                    //sSaveFileName = ""; 
-                    //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);                    
-                    //sSaveFileName += OK_FOLDER_NAME + sJobFolderName + "\\";
-                    ////sSaveFileName += sFolderName + "\\";
-                    ////sSaveFileName += sFileName;
-
-                    //sSaveFileName += sFolderName;
-
-
                     if (!Directory.Exists(sFolderNameForOkLog)) 
                     {
                         Directory.CreateDirectory(sFolderNameForOkLog);
                         CommonModule.OutPutLogFile($"OKフォルダを作成しました：{sFolderName}");
                     }
-                    //sSaveFileName += "\\" + sFileName;
-
 
                     // ヘッダー情報書込処理
                     if (!File.Exists(sFileNameForOkLog))
@@ -1893,12 +1869,6 @@ namespace QrSorterInspectionApp
 
                 // 総数のカウント表示
                 LblTotalCount.Text = (iOKCount + iNGCount).ToString("#,##0");
-
-                //sSaveFileName = "";
-                //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-                //sSaveFileName += ALL_FOLDER_NAME + sJobFolderName + "\\";
-                //sSaveFileName += sFileNameForAllItems;
-                //sSaveFileName = sFileNameForOkLog;
 
                 // ヘッダー情報書込処理
                 if (!File.Exists(sFileNameForAllLog))
@@ -2054,11 +2024,14 @@ namespace QrSorterInspectionApp
                 sHeader += "\"イベント（コメント）\",";
                 sHeader += "\"受領日\",";
                 sHeader += "\"作業員情報（機械情報）\",";
-                sHeader += "\"物件情報（DPS/BPO/Broad等）\",";
+                //sHeader += "\"物件情報（DPS/BPO/Broad等）\",";
+                sHeader += "\"市区町村コード\",";
                 sHeader += "\"エラーコード\",";
                 sHeader += "\"生産管理番号\",";
-                sHeader += "\"仕分けコード１\",";
-                sHeader += "\"仕分けコード２\",";
+                //sHeader += "\"仕分けコード１\",";
+                //sHeader += "\"仕分けコード２\",";
+                sHeader += "\"箱ラベル番号\",";
+                sHeader += "\"問い合わせ番号\",";
                 sHeader += "\"ファイル名（画像）\",";
                 sHeader += "\"ファイルパス（画像）\",";
                 sHeader += "\"工場コード\"";
@@ -2609,9 +2582,9 @@ namespace QrSorterInspectionApp
                 }
 
                 iPreviousIndex = CmbMode.SelectedIndex;
-                TxtBoxLabelNumber.Text = "";
-                TxtInquiryNumber.Text = "";
-                TxtCheckReading.Text = "";
+
+                // 内部カウンタと表示をクリアする
+                ClearCounterAndDisplay();
 
                 if (CmbMode.SelectedIndex == 0)
                 {
@@ -2830,21 +2803,8 @@ namespace QrSorterInspectionApp
                 {
                     return;
                 }
-                //TxtBoxLabelNumber.Text = "";
-                //TxtInquiryNumber.Text = "";
-                //TxtCheckReading.Text = "";
-                //TxtQrReadData.Text = "";
-                //LblQrReadData.Text = "";
-
                 // 内部カウンタと表示をクリアする
                 ClearCounterAndDisplay();
-
-                //LblTotalCount.Text = "0";
-                //LblOKCount.Text = "0";
-                //LblNGCount.Text = "0";                
-                //LblBox1.Text = "0";
-                //LblBoxEject.Text = "0";
-                //LblPocket1.Text = "";
             }
             catch (Exception ex)
             {
