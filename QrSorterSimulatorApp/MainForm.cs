@@ -295,6 +295,7 @@ namespace QrSorterSimulatorApp
         private void RcvDataToTextBox(string data)
         {
             string strMessage;
+            string[] sAry;
 
             try
             {
@@ -320,6 +321,15 @@ namespace QrSorterSimulatorApp
                     case PubConstClass.CMD_RECIEVE_c:
                         // 停止コマンド
                         BtnStop.PerformClick();
+                        break;
+
+                    case PubConstClass.CMD_RECIEVE_f:
+                        // ＸＸコマンド
+                        sAry = data.Split(',');
+                        if (sAry[1] == "1")
+                        {
+                            TxtPropertyId.Text = sAry[3];
+                        }
                         break;
 
                     default:
@@ -357,20 +367,22 @@ namespace QrSorterSimulatorApp
                 else
                 {
                     // 読取値（31桁）：物件ID（5桁）＋（1st/2st）＋局出し日（YYYYMMDD）＋ユニークキー（17桁）
-                    sData = TxtPropertyId.Text.Trim();                                          // 物件ID
-                    sData += "1";                                                               // （1st/2st）
-                    sData += dtTimPickPostalDate.Value.ToString("yyyyMMdd");                    // 局出し日（YYYYMMDD）
-                    sData += "-" + DateTime.Now.ToString("yyMMdd_");                             // ユニークキー（7桁）                    
+                    // 39201-00011020-39-4
+
+                    sData = TxtPropertyId.Text.Trim();                                          // 市区町村コード（5桁）
+                    //sData += "1";                                                               // （1st/2st）
+                    //sData += dtTimPickPostalDate.Value.ToString("yyyyMMdd");                    // 局出し日（YYYYMMDD）
+                    //sData += "-" + DateTime.Now.ToString("yyMMdd_");                             // ユニークキー（7桁）                    
                     //sData += int.Parse(TxtUniqueKey.Text).ToString().PadLeft(CmbQRDigit.SelectedIndex + 9, '0') + ",";  // ユニークキー（xx桁）
                     //sData += int.Parse(TxtUniqueKey.Text).ToString().PadLeft(CmbQRDigit.SelectedIndex + 9 - 7, '0') + "       ,";  // ユニークキー（xx桁）
                     //sData += TxtUniqueKey.Text + "       ,";  // ユニークキー（xx桁）
-                    sData += TxtUniqueKey.Text+",";  // ユニークキー（xx桁）
+                    sData += TxtUniqueKey.Text.PadLeft(11,'0')+",";  // ユニークキー（11桁）
                     // ユニークキーのインクリメント                        
                     //TxtUniqueKey.Text = (int.Parse(TxtUniqueKey.Text) + 1).ToString().PadLeft(CmbQRDigit.SelectedIndex + 9, '0');
 
                     //sData = TxtUniqueKey.Text + ",";
 
-                    //TxtUniqueKey.Text = (int.Parse(TxtUniqueKey.Text) + 1).ToString();
+                    TxtUniqueKey.Text = (int.Parse(TxtUniqueKey.Text) + 1).ToString("00000000000");
                 }
 
                 // 判定（OK="0"/NG="1"）
