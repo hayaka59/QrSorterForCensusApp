@@ -69,7 +69,7 @@ namespace QrSorterInspectionApp
         private string sFileNameForAllLog;      // 全件用の操作ログファイル名
         private string sFileNameForErrorLog;    // エラーログファイル名
         #endregion
-        private bool bManualEntryFlg = false;
+        private bool bManualEntryFlg = false;   // 手動登録中フラグ
 
         private byte[] buffer = new byte[1024];
         private int bufferIndex = 0;
@@ -1259,6 +1259,7 @@ namespace QrSorterInspectionApp
                     case PubConstClass.CMD_RECIEVE_B:
                         if (bManualEntryFlg)
                         {
+                            // 手動登録中は検査開始不可とする
                             MyProcStop();
                             // シリアルデータ送信
                             SendSerialData(PubConstClass.CMD_SEND_c);
@@ -1266,7 +1267,7 @@ namespace QrSorterInspectionApp
                         // 開始コマンド
                         if (CheckNumberOfDigits())
                         {
-                            // 桁数チェックでOKならば、、、
+                            // 桁数チェックでOKの場合は検査開始
                             MyProcStart();
                         }
                         break;
@@ -1832,22 +1833,11 @@ namespace QrSorterInspectionApp
                         }
                     }
 
-                    //sSaveFileName = ""; 
-                    //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);                    
-                    //sSaveFileName += OK_FOLDER_NAME + sJobFolderName + "\\";
-                    ////sSaveFileName += sFolderName + "\\";
-                    ////sSaveFileName += sFileName;
-
-                    //sSaveFileName += sFolderName;
-
-
                     if (!Directory.Exists(sFolderNameForOkLog)) 
                     {
                         Directory.CreateDirectory(sFolderNameForOkLog);
                         CommonModule.OutPutLogFile($"OKフォルダを作成しました：{sFolderName}");
                     }
-                    //sSaveFileName += "\\" + sFileName;
-
 
                     // ヘッダー情報書込処理
                     if (!File.Exists(sFileNameForOkLog))
@@ -2054,11 +2044,14 @@ namespace QrSorterInspectionApp
                 sHeader += "\"イベント（コメント）\",";
                 sHeader += "\"受領日\",";
                 sHeader += "\"作業員情報（機械情報）\",";
-                sHeader += "\"物件情報（DPS/BPO/Broad等）\",";
+                //sHeader += "\"物件情報（DPS/BPO/Broad等）\",";
+                sHeader += "\"市区町村コード\",";
                 sHeader += "\"エラーコード\",";
                 sHeader += "\"生産管理番号\",";
-                sHeader += "\"仕分けコード１\",";
-                sHeader += "\"仕分けコード２\",";
+                //sHeader += "\"仕分けコード１\",";
+                //sHeader += "\"仕分けコード２\",";
+                sHeader += "\"箱ラベル番号\",";
+                sHeader += "\"問い合わせ番号\",";
                 sHeader += "\"ファイル名（画像）\",";
                 sHeader += "\"ファイルパス（画像）\",";
                 sHeader += "\"工場コード\"";
