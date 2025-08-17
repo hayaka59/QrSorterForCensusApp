@@ -82,10 +82,13 @@ namespace QrSorterInspectionApp
                 col05.Text = "正解データファイル名";
                 col06.Text = "受領日";
                 col07.Text = "作業員情報";
-                col08.Text = "物件情報";    // 物件情報（DPS/BPO/Broad等）
+                //col08.Text = "物件情報";    // 物件情報（DPS/BPO/Broad等）
+                col08.Text = "市区町村コード";    // 市区町村コード
                 col09.Text = "エラーCD";
-                col10.Text = "仕分①";
-                col11.Text = "仕分②";
+                //col10.Text = "仕分①";
+                //col11.Text = "仕分②";
+                col10.Text = "箱ラベル番号";
+                col11.Text = "問い合わせ番号";
                 col01.TextAlign = HorizontalAlignment.Center;
                 col02.TextAlign = HorizontalAlignment.Center;
                 col03.TextAlign = HorizontalAlignment.Center;
@@ -104,10 +107,10 @@ namespace QrSorterInspectionApp
                 col05.Width = 560;         // 正解データファイル名
                 col06.Width = 110;         // 受領日
                 col07.Width = 110;         // 作業員情報（機械情報）
-                col08.Width = 110;         // 物件情報（DPS/BPO/Broad等）
+                col08.Width = 110;         // 物件情報（DPS/BPO/Broad等） → 市区町村コード
                 col09.Width = 90;          // エラーコード
-                col10.Width = 80;          // 仕分けコード①
-                col11.Width = 80;          // 仕分けコード②
+                col10.Width = 80;          // 仕分けコード① → 箱ラベル番号
+                col11.Width = 80;          // 仕分けコード② → 問い合わせ番号
                 ColumnHeader[] colHeaderOK = new[] { col01, col02, col03, col04, col05,
                                                      col06, col07, col08, col09, col10,
                                                      col11
