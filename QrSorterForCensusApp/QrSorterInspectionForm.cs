@@ -235,7 +235,8 @@ namespace QrSorterInspectionApp
                 {
                     Directory.CreateDirectory(sFolderNameForErrorLog);
                 }
-                sFileNameForErrorLog = $"国勢調査用_errorlog_{DateTime.Now.ToString("yyyyMMdd")}_{DateTime.Now.ToString("yyyyMMdd")}121234.csv";
+                sFileNameForErrorLog = $"\\国勢調査用_errorlog_{DateTime.Now.ToString("yyyyMMdd")}_" +
+                                       $"{DateTime.Now.ToString("yyyyMMdd")}121234.csv";
 
                 //string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
                 //sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
@@ -479,12 +480,16 @@ namespace QrSorterInspectionApp
                 //}
 
                 string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                string sOutPutDate = DateTime.Now.ToString("yyyyMMdd");
 
                 if (CmbMode.SelectedIndex == 0)
                 {
                     // 受付モード
+                    if (sFileNameForOkLog == "")
+                    {
                     sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
                     sFileNameForAllLog = $"{sFolderNameForAllLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
+                }
                 }
                 else
                 {
@@ -493,6 +498,10 @@ namespace QrSorterInspectionApp
                     sFileNameForAllLog = $"{sFolderNameForAllLog}\\{sBoxLabelNumber}_{sInquiryNumber}_{sReceiptDate}_{sOutPutDateTime}.csv";
                 }                                              
                 sFileNameForErrorLog = $"{sFolderNameForErrorLog}\\国勢調査用_errorlog_{sReceiptDate}_{sOutPutDateTime}.csv";
+
+                sFolderNameForErrorLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+                                       "エラーログ\\" + sOutPutDate;
+                sFileNameForErrorLog = $"国勢調査用_errorlog_{sOutPutDate}_{sOutPutDateTime}.csv";
 
                 LblFdrInfo1.Text = sFolderNameForOkLog;
                 LblGrpInfo1.Text = sFileNameForOkLog;
