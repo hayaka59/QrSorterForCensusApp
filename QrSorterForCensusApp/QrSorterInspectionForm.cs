@@ -104,6 +104,9 @@ namespace QrSorterInspectionApp
                 TxtBoxLabelNumber.Enabled = true;
                 TxtInquiryNumber.Enabled = true;
 
+                // 受領日
+                sReceiptDate = DtpDateReceipt.Value.ToString("yyyyMMdd");
+
                 #region OK履歴のヘッダー設定
                 // ListViewのカラムヘッダー設定
                 LsvOKHistory.View = View.Details;                
@@ -225,8 +228,7 @@ namespace QrSorterInspectionApp
                 PubConstClass.sPrevNonDelivery2 = "";    // 前回の不着事由仕分け２
 
                 // yyyyMMdd HHmmss形式で現在日時を取得
-                // 
-                //// エラーログ用のログ保存用フォルダの作成
+                // エラーログ用のログ保存用フォルダの作成
                 sFolderNameForErrorLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
                                          "エラーログ\\" + DateTime.Now.ToString("yyyyMMdd");
                 if (Directory.Exists(sFolderNameForErrorLog) == false)
@@ -235,6 +237,9 @@ namespace QrSorterInspectionApp
                 }
                 sFileNameForErrorLog = $"国勢調査用_errorlog_{DateTime.Now.ToString("yyyyMMdd")}_{DateTime.Now.ToString("yyyyMMdd")}121234.csv";
 
+                //string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                //sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
+                //sFileNameForAllLog = $"{sFolderNameForAllLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}（全件）.csv";
 
                 // 停止中
                 SetStatus(0);
