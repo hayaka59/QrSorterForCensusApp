@@ -876,7 +876,7 @@ namespace QrSorterInspectionApp
                         SendSerialData(PubConstClass.CMD_SEND_c);
                         LblError.Visible = false;
                         // 11～13桁でない場合
-                        MessageBox.Show("問い合わせ番号は、11～13桁で入力して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("問い合わせ番号は、12桁で入力して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
 
