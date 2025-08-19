@@ -565,7 +565,8 @@ namespace QrSorterInspectionApp
                     SetStatus(0);
                 }
 
-                if (int.Parse(LblBox1.Text) > 850)
+                //if (int.Parse(LblBox1.Text) >= 850)
+                if (int.Parse(LblBox1.Text) >= 850)
                 {
                     if (LblOffLine.BackColor == Color.Yellow)
                     {
@@ -575,6 +576,10 @@ namespace QrSorterInspectionApp
                     {
                         LblOffLine.BackColor = Color.Yellow;
                     }
+                }
+                else
+                {
+                    LblOffLine.BackColor = Color.WhiteSmoke;
                 }
             }
             catch (Exception ex)
@@ -2403,6 +2408,9 @@ namespace QrSorterInspectionApp
 
             try
             {
+                // 背景色をリセットする
+                LblOffLine.BackColor = Color.WhiteSmoke;
+
                 if (iPreviousIndex == CmbMode.SelectedIndex)
                 {
                     // 前回値と同じなら何もせずに抜ける
@@ -2663,6 +2671,9 @@ namespace QrSorterInspectionApp
         {
             try
             {
+                // 背景色をリセットする
+                LblOffLine.BackColor = Color.WhiteSmoke;
+
                 DialogResult dialogResult = MessageBox.Show("JOBを切り替えますか？","確認",MessageBoxButtons.OKCancel,MessageBoxIcon.Question);
                 if (dialogResult == DialogResult.Cancel)
                 {
