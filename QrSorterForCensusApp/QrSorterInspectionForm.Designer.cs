@@ -1277,7 +1277,7 @@
             this.BtnJobChange.Name = "BtnJobChange";
             this.BtnJobChange.Size = new System.Drawing.Size(208, 54);
             this.BtnJobChange.TabIndex = 353;
-            this.BtnJobChange.Text = "JOB切替";
+            this.BtnJobChange.Text = "ログ確定";
             this.BtnJobChange.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.BtnJobChange.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.BtnJobChange.UseVisualStyleBackColor = true;
