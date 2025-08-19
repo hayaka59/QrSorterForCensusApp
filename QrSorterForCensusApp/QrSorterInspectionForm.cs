@@ -2770,7 +2770,8 @@ namespace QrSorterInspectionApp
                     if (ChkCDCheck.Checked == true)
                     {
                         string sCheckDigit = GetCheckDigit(input);
-                        if (sCheckDigit != input.Substring(input.Length - 1, 1))
+                        // if (sCheckDigit != input.Substring(input.Length - 1, 1))
+                        if (sCheckDigit != input.Substring(15, 1))
                         {
                             MessageBox.Show($"チェックデジット（{sCheckDigit}）が異なります", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             TxtQrReadData.Text = "";
