@@ -918,7 +918,7 @@
             this.TxtQrReadData.Location = new System.Drawing.Point(13, 20);
             this.TxtQrReadData.Name = "TxtQrReadData";
             this.TxtQrReadData.Size = new System.Drawing.Size(555, 36);
-            this.TxtQrReadData.TabIndex = 359;
+            this.TxtQrReadData.TabIndex = 3;
             this.TxtQrReadData.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtQrReadData_Key);
             // 
             // LblQrReadData
@@ -1300,7 +1300,7 @@
             this.TxtInquiryNumber.Location = new System.Drawing.Point(253, 217);
             this.TxtInquiryNumber.Name = "TxtInquiryNumber";
             this.TxtInquiryNumber.Size = new System.Drawing.Size(333, 36);
-            this.TxtInquiryNumber.TabIndex = 357;
+            this.TxtInquiryNumber.TabIndex = 1;
             this.TxtInquiryNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtInquiryNumber_KeyDown);
             // 
             // TxtCheckReading
@@ -1310,7 +1310,7 @@
             this.TxtCheckReading.Location = new System.Drawing.Point(253, 259);
             this.TxtCheckReading.Name = "TxtCheckReading";
             this.TxtCheckReading.Size = new System.Drawing.Size(333, 36);
-            this.TxtCheckReading.TabIndex = 358;
+            this.TxtCheckReading.TabIndex = 2;
             this.TxtCheckReading.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtCheckReading_KeyDown);
             // 
             // ChkCDCheck

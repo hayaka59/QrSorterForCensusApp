@@ -99,10 +99,12 @@ namespace QrSorterInspectionApp
                 CmbMode.Items.Add("箱詰めモード");
                 CmbMode.SelectedIndex = 1;
 
-
                 LblOffLine.Text = "箱詰めモード";
                 TxtBoxLabelNumber.Enabled = true;
                 TxtInquiryNumber.Enabled = true;
+
+                // 受領日
+                sReceiptDate = DtpDateReceipt.Value.ToString("yyyyMMdd");
 
                 #region OK履歴のヘッダー設定
                 // ListViewのカラムヘッダー設定
@@ -225,16 +227,19 @@ namespace QrSorterInspectionApp
                 PubConstClass.sPrevNonDelivery2 = "";    // 前回の不着事由仕分け２
 
                 // yyyyMMdd HHmmss形式で現在日時を取得
-                // 
-                //// エラーログ用のログ保存用フォルダの作成
+                // エラーログ用のログ保存用フォルダの作成
                 sFolderNameForErrorLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
                                          "エラーログ\\" + DateTime.Now.ToString("yyyyMMdd");
                 if (Directory.Exists(sFolderNameForErrorLog) == false)
                 {
                     Directory.CreateDirectory(sFolderNameForErrorLog);
                 }
-                sFileNameForErrorLog = $"国勢調査用_errorlog_{DateTime.Now.ToString("yyyyMMdd")}_{DateTime.Now.ToString("yyyyMMdd")}121234.csv";
+                sFileNameForErrorLog = $"\\国勢調査用_errorlog_{DateTime.Now.ToString("yyyyMMdd")}_" +
+                                       $"{DateTime.Now.ToString("yyyyMMdd")}121234.csv";
 
+                //string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                //sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
+                //sFileNameForAllLog = $"{sFolderNameForAllLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}（全件）.csv";
 
                 // 停止中
                 SetStatus(0);
@@ -412,14 +417,6 @@ namespace QrSorterInspectionApp
         /// </summary>
         private void CreateInspectionLogFolder()
         {
-            string sJobName;
-            string sJobFolder;
-            string sGrpFolder;
-            string sReasonForNonDelivery1;
-            string sReasonForNonDelivery2;
-            string[] sArray;
-            string[] sNonDeliveryReasonArray;
-
             try
             {
                 if (LblSelectedFile.Text.Trim()=="")
@@ -474,20 +471,27 @@ namespace QrSorterInspectionApp
                 //}
 
                 string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                string sOutPutDate = DateTime.Now.ToString("yyyyMMdd");
 
                 if (CmbMode.SelectedIndex == 0)
                 {
                     // 受付モード
-                    sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
-                    sFileNameForAllLog = $"{sFolderNameForAllLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
+                    if (sFileNameForOkLog == "")
+                    {
+                        sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
+                        sFileNameForAllLog = $"{sFolderNameForAllLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}（全件）.csv";
+                    }
                 }
                 else
                 {
                     // 箱詰めモード
                     sFileNameForOkLog = $"{sFolderNameForOkLog}\\{sBoxLabelNumber}_{sInquiryNumber}_{sReceiptDate}_{sOutPutDateTime}.csv";
-                    sFileNameForAllLog = $"{sFolderNameForAllLog}\\{sBoxLabelNumber}_{sInquiryNumber}_{sReceiptDate}_{sOutPutDateTime}.csv";
-                }                                              
-                sFileNameForErrorLog = $"{sFolderNameForErrorLog}\\国勢調査用_errorlog_{sReceiptDate}_{sOutPutDateTime}.csv";
+                    sFileNameForAllLog = $"{sFolderNameForAllLog}\\{sBoxLabelNumber}_{sInquiryNumber}_{sReceiptDate}_{sOutPutDateTime}（全件）.csv";
+                }
+
+                sFolderNameForErrorLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+                                       "エラーログ\\" + sOutPutDate;
+                sFileNameForErrorLog = $"国勢調査用_errorlog_{sOutPutDate}_{sOutPutDateTime}.csv";
 
                 LblFdrInfo1.Text = sFolderNameForOkLog;
                 LblGrpInfo1.Text = sFileNameForOkLog;
@@ -854,7 +858,7 @@ namespace QrSorterInspectionApp
                     }
 
                     // 問い合わせ番号の桁数チェック
-                    if (!(TxtInquiryNumber.Text.Trim().Length >= 11 && TxtInquiryNumber.Text.Trim().Length <= 13))
+                    if (TxtInquiryNumber.Text.Trim().Length != 12)
                     {
                         bRetVal = false;
                         //「検査終了」とする
@@ -862,7 +866,7 @@ namespace QrSorterInspectionApp
                         SendSerialData(PubConstClass.CMD_SEND_c);
                         LblError.Visible = false;
                         // 11～13桁でない場合
-                        MessageBox.Show("問い合わせ番号は、11～13桁で入力して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("問い合わせ番号は、12桁で入力して下さい", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
 
@@ -1598,29 +1602,30 @@ namespace QrSorterInspectionApp
                     sErrorData += "未定義エラー番号,未定義のエラー番号です。";
                 }
 
-                // エラーフォルダ及びエラーファイル名のチェック
-                if (sFolderNameForErrorLog == null || sFileNameForErrorLog == null)
-                {
-                    // NULLの場合
-                    sJobFolderName = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-                    sJobFolderName += $"エラーログ\\{sProcessingDate}\\";
-                    //sJobFolderName = $"C:\\QRソーター\\エラーログ\\20250816";
-                    sFileNameForErrorLog = $"処理開始前_errorlog_{sReceiptDate}_{DateTime.Now.ToString("yyyyMMdd")}.csv" + "000000.csv";
-                    CommonModule.OutPutLogFile($"エラーファイル名を作成しました：{sFileNameForErrorLog}");
-                    //string sFolderName = "";
-                    //sFolderName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
+                //// エラーフォルダ及びエラーファイル名のチェック
+                //if (sFolderNameForErrorLog == null || sFileNameForErrorLog == null)
+                //{
+                //    // NULLの場合
+                //    sJobFolderName = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
+                //    sJobFolderName += $"エラーログ\\{sProcessingDate}\\";
+                //    //sJobFolderName = $"C:\\QRソーター\\エラーログ\\20250816";
+                //    sFileNameForErrorLog = $"処理開始前_errorlog_{sReceiptDate}_{DateTime.Now.ToString("yyyyMMdd")}.csv" + "000000.csv";
+                //    CommonModule.OutPutLogFile($"エラーファイル名を作成しました：{sFileNameForErrorLog}");
+                //    //string sFolderName = "";
+                //    //sFolderName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
 
-                    //string sFolderName += sFolderNameForErrorLog + sJobFolderName + "\\";
-                    if (!Directory.Exists(sFolderNameForErrorLog))
-                    {
-                        Directory.CreateDirectory(sFolderNameForErrorLog);
-                        CommonModule.OutPutLogFile($"エラーフォルダを作成しました：{sFolderNameForErrorLog}");
-                    }
-                }
+                //    //string sFolderName += sFolderNameForErrorLog + sJobFolderName + "\\";
+                //    if (!Directory.Exists(sFolderNameForErrorLog))
+                //    {
+                //        Directory.CreateDirectory(sFolderNameForErrorLog);
+                //        CommonModule.OutPutLogFile($"エラーフォルダを作成しました：{sFolderNameForErrorLog}");
+                //    }
+                //}
 
                 // エラーファイル名の生成
                 //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
                 //sSaveFileName += sFolderNameForErrorLog + sJobFolderName + "\\";
+                //sSaveFileName = $"{sFolderNameForErrorLog}\\{sFileNameForErrorLog}";
                 sSaveFileName = $"{sFolderNameForErrorLog}\\{sFileNameForErrorLog}";
 
                 // エラーデータ書込処理
@@ -1675,6 +1680,37 @@ namespace QrSorterInspectionApp
                     //MessageBox.Show("検査前の設定を行ってください", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     CommonModule.OutPutLogFile($"データ（{sData}）を受信したが、sFolderNameForOkLog または sFileNameForOkLog が、NULLです");
                     return;
+                }
+
+                if (sFolderNameForOkLog == "" || sFileNameForOkLog == "")
+                {
+                    // 受領日
+                    sReceiptDate = DtpDateReceipt.Value.ToString("yyyyMMdd");
+
+                    // 処理日の取得
+                    sProcessingDate = DateTime.Now.ToString("yyyyMMdd");
+
+                    // ＯＫ用の検査ログ保存用フォルダの作成
+                    sFolderNameForOkLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+                                          sProcessingModeName + "\\" + sProcessingDate;
+                    if (Directory.Exists(sFolderNameForOkLog) == false)
+                    {
+                        Directory.CreateDirectory(sFolderNameForOkLog);
+                    }
+
+                    // 全件用の検査ログ保存用フォルダの作成
+                    sFolderNameForAllLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+                                           "受付・箱詰め用\\" + sProcessingDate;
+                    if (Directory.Exists(sFolderNameForAllLog) == false)
+                    {
+                        Directory.CreateDirectory(sFolderNameForAllLog);
+                    }
+                    string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
+                    sFileNameForAllLog = $"{sFolderNameForAllLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}（全件）.csv";
+
+                    CommonModule.OutPutLogFile($"ファイル名作成（{sFileNameForOkLog}／{sFileNameForAllLog}）");
+
                 }
 
                 sWriteDate = DateTime.Now.ToString("yyyy/MM/dd");
@@ -2227,10 +2263,10 @@ namespace QrSorterInspectionApp
                 sReceiptDate = "";            // 受領日
                 sFolderNameForOkLog = "";     // OK用の操作ログファイル名
                 sFolderNameForAllLog = "";    // 全件用の操作ログファイル名
-                sFolderNameForErrorLog = "";  // エラーログファイル名
+                //sFolderNameForErrorLog = "";  // エラーログファイル名
                 sFileNameForOkLog = "";       // OK用の操作ログファイル名
                 sFileNameForAllLog = "";      // 全件用の操作ログファイル名
-                sFileNameForErrorLog = "";    // エラーログファイル名
+                //sFileNameForErrorLog = "";    // エラーログファイル名
 
                 TxtBoxLabelNumber.Text = "";
                 TxtInquiryNumber.Text = "";
@@ -2592,6 +2628,35 @@ namespace QrSorterInspectionApp
                     TxtBoxLabelNumber.Enabled = false;
                     TxtInquiryNumber.Enabled = false;
                     TxtCheckReading.Enabled = false;
+
+                    // 受付モード
+                    sProcessingModeName = "受付用";
+
+                    // 受領日
+                    sReceiptDate = DtpDateReceipt.Value.ToString("yyyyMMdd");
+
+                    // 処理日の取得
+                    sProcessingDate = DateTime.Now.ToString("yyyyMMdd");
+
+                    // ＯＫ用の検査ログ保存用フォルダの作成
+                    sFolderNameForOkLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+                                          sProcessingModeName + "\\" + sProcessingDate;
+                    if (Directory.Exists(sFolderNameForOkLog) == false)
+                    {
+                        Directory.CreateDirectory(sFolderNameForOkLog);
+                    }
+
+                    // 全件用の検査ログ保存用フォルダの作成
+                    sFolderNameForAllLog = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder) +
+                                           "受付・箱詰め用\\" + sProcessingDate;
+                    if (Directory.Exists(sFolderNameForAllLog) == false)
+                    {
+                        Directory.CreateDirectory(sFolderNameForAllLog);
+                    }
+
+                    string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
+                    sFileNameForAllLog = $"{sFolderNameForAllLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}（全件）.csv";
                 }
                 else
                 {
@@ -2803,6 +2868,10 @@ namespace QrSorterInspectionApp
                 {
                     return;
                 }
+
+                string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
+                sFileNameForAllLog = $"{sFolderNameForAllLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}（全件）.csv";
                 // 内部カウンタと表示をクリアする
                 ClearCounterAndDisplay();
             }
