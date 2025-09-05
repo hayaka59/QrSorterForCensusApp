@@ -875,11 +875,11 @@ namespace QrSorterInspectionApp
                 BtnAllCounterClear.Visible = bEnable;
 
                 groupBox2.Enabled = bEnable;
-                TxtBoxLabelNumber.Enabled = bEnable;
-                TxtInquiryNumber.Enabled = bEnable;
-                TxtCheckReading.Enabled = bEnable;
+                //TxtBoxLabelNumber.Enabled = bEnable;
+                //TxtInquiryNumber.Enabled = bEnable;
+                //TxtCheckReading.Enabled = bEnable;
                 ChkCDCheck.Enabled = bEnable;
-                //TxtQrReadData.Enabled = bEnable;
+                TxtQrReadData.Enabled = bEnable;
             }
             catch (Exception ex)
             {
@@ -1285,6 +1285,11 @@ namespace QrSorterInspectionApp
                 }
                 // 検査中
                 SetStatus(1);
+
+                TxtBoxLabelNumber.Enabled = false;
+                TxtInquiryNumber.Enabled = false;
+                TxtCheckReading.Enabled = false;
+
                 // 検査開始時のチェック
                 CheckStartUp();
                 // JOB設定情報の送信
@@ -2481,33 +2486,20 @@ namespace QrSorterInspectionApp
             }
         }
 
-        private void TxtBoxLabelNumber_Enter(object sender, EventArgs e)
-        {
-            //try
-            //{
-            //    if (TxtBoxLabelNumber.Text.Length >= 5)
-            //    {
-            //        TxtCheckReading.Text = TxtBoxLabelNumber.Text.Substring(0, 5);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message, "【TxtBoxLabelNumber_Enter】", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-        }
-
         private void TxtBoxLabelNumber_KeyDown(object sender, KeyEventArgs e)
         {
             try
             {
                 if (e.KeyCode == Keys.Enter)
                 {
-                    string input = TxtBoxLabelNumber.Text;
-                    string firstFive = input.Length >= 5 ? input.Substring(0, 5) : input;
-                    TxtCheckReading.Text = firstFive;
+                    SetTxtCheckReading();
 
-                    e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
-                    TxtInquiryNumber.Focus();
+                    //string input = TxtBoxLabelNumber.Text;
+                    //string firstFive = input.Length >= 5 ? input.Substring(0, 5) : input;
+                    //TxtCheckReading.Text = firstFive;
+
+                    //e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
+                    //TxtInquiryNumber.Focus();
                 }
             }
             catch (Exception ex)
@@ -2680,6 +2672,10 @@ namespace QrSorterInspectionApp
                     return;
                 }
 
+                TxtBoxLabelNumber.Enabled = true;
+                TxtInquiryNumber.Enabled = true;
+                TxtCheckReading.Enabled = true;
+
                 string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
                 sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
                 sFileNameForAllLog = $"{sFolderNameForAllLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}（全件）.csv";
@@ -2699,7 +2695,8 @@ namespace QrSorterInspectionApp
                 if (e.KeyCode == Keys.Enter)
                 {
                     e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
-                    TxtCheckReading.Focus();
+                    //TxtCheckReading.Focus();
+                    BtnStartInspection.Focus();
                 }
             }
             catch (Exception ex)
@@ -2721,6 +2718,28 @@ namespace QrSorterInspectionApp
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "【TxtCheckReading_KeyDown】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void TxtBoxLabelNumber_Leave(object sender, EventArgs e)
+        {
+            SetTxtCheckReading();
+        }
+
+        private void SetTxtCheckReading()
+        {
+            try
+            {
+                string input = TxtBoxLabelNumber.Text;
+                string firstFive = input.Length >= 5 ? input.Substring(0, 5) : input;
+                TxtCheckReading.Text = firstFive;
+
+                //e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
+                TxtInquiryNumber.Focus();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【SetTxtCheckReading】", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
