@@ -1187,7 +1187,7 @@
             this.BtnStopInspection.Location = new System.Drawing.Point(313, 982);
             this.BtnStopInspection.Name = "BtnStopInspection";
             this.BtnStopInspection.Size = new System.Drawing.Size(205, 50);
-            this.BtnStopInspection.TabIndex = 182;
+            this.BtnStopInspection.TabIndex = 3;
             this.BtnStopInspection.Text = "検査終了";
             this.BtnStopInspection.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.BtnStopInspection.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -1215,7 +1215,7 @@
             this.BtnStartInspection.Location = new System.Drawing.Point(102, 982);
             this.BtnStartInspection.Name = "BtnStartInspection";
             this.BtnStartInspection.Size = new System.Drawing.Size(205, 50);
-            this.BtnStartInspection.TabIndex = 180;
+            this.BtnStartInspection.TabIndex = 2;
             this.BtnStartInspection.Text = "検査開始";
             this.BtnStartInspection.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.BtnStartInspection.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -1277,7 +1277,7 @@
             this.BtnJobChange.Name = "BtnJobChange";
             this.BtnJobChange.Size = new System.Drawing.Size(208, 54);
             this.BtnJobChange.TabIndex = 353;
-            this.BtnJobChange.Text = "JOB切替";
+            this.BtnJobChange.Text = "ログ確定";
             this.BtnJobChange.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.BtnJobChange.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.BtnJobChange.UseVisualStyleBackColor = true;
@@ -1292,6 +1292,7 @@
             this.TxtBoxLabelNumber.Size = new System.Drawing.Size(333, 36);
             this.TxtBoxLabelNumber.TabIndex = 0;
             this.TxtBoxLabelNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtBoxLabelNumber_KeyDown);
+            this.TxtBoxLabelNumber.Leave += new System.EventHandler(this.TxtBoxLabelNumber_Leave);
             // 
             // TxtInquiryNumber
             // 
@@ -1310,7 +1311,7 @@
             this.TxtCheckReading.Location = new System.Drawing.Point(253, 259);
             this.TxtCheckReading.Name = "TxtCheckReading";
             this.TxtCheckReading.Size = new System.Drawing.Size(333, 36);
-            this.TxtCheckReading.TabIndex = 2;
+            this.TxtCheckReading.TabIndex = 10;
             this.TxtCheckReading.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtCheckReading_KeyDown);
             // 
             // ChkCDCheck

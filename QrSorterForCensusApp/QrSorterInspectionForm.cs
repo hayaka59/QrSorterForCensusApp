@@ -550,6 +550,8 @@ namespace QrSorterInspectionApp
         /// <param name="e"></param>
         private void TimDateTime_Tick(object sender, EventArgs e)
         {
+            int iBoxCount;
+
             try
             {
                 // 現在時刻の表示
@@ -565,7 +567,9 @@ namespace QrSorterInspectionApp
                     SetStatus(0);
                 }
 
-                if (int.Parse(LblBox1.Text) > 850)
+                iBoxCount = int.Parse(LblBox1.Text);
+                //if (int.Parse(LblBox1.Text) >= 850)
+                if (iBoxCount >= 850)
                 {
                     if (LblOffLine.BackColor == Color.Yellow)
                     {
@@ -576,6 +580,25 @@ namespace QrSorterInspectionApp
                         LblOffLine.BackColor = Color.Yellow;
                     }
                 }
+                else
+                {
+                    LblOffLine.BackColor = Color.WhiteSmoke;
+                }
+
+                //// 900セット以上の時は、50で割り切れるかをチェックする
+                //if (iBoxCount >= 200) // 900
+                //{
+                //    if (iBox1Count % 50 == 0)
+                //    {
+                //        LblOffLine.BackColor = Color.WhiteSmoke;
+                //        // 900、950、1000、1050、110、、と50単位で停止する。
+                //        // シリアルデータ送信
+                //        SendSerialData(PubConstClass.CMD_SEND_c);
+                //        LblError.Visible = false;
+
+                //        MyProcStop();
+                //    }
+                //}
             }
             catch (Exception ex)
             {
@@ -870,11 +893,11 @@ namespace QrSorterInspectionApp
                 BtnAllCounterClear.Visible = bEnable;
 
                 groupBox2.Enabled = bEnable;
-                TxtBoxLabelNumber.Enabled = bEnable;
-                TxtInquiryNumber.Enabled = bEnable;
-                TxtCheckReading.Enabled = bEnable;
+                //TxtBoxLabelNumber.Enabled = bEnable;
+                //TxtInquiryNumber.Enabled = bEnable;
+                //TxtCheckReading.Enabled = bEnable;
                 ChkCDCheck.Enabled = bEnable;
-                //TxtQrReadData.Enabled = bEnable;
+                TxtQrReadData.Enabled = bEnable;
             }
             catch (Exception ex)
             {
@@ -1280,6 +1303,11 @@ namespace QrSorterInspectionApp
                 }
                 // 検査中
                 SetStatus(1);
+
+                TxtBoxLabelNumber.Enabled = false;
+                TxtInquiryNumber.Enabled = false;
+                TxtCheckReading.Enabled = false;
+
                 // 検査開始時のチェック
                 CheckStartUp();
                 // JOB設定情報の送信
@@ -1704,6 +1732,21 @@ namespace QrSorterInspectionApp
 
                 // 総数のカウント表示
                 LblTotalCount.Text = (iOKCount + iNGCount).ToString("#,##0");
+
+                // 900セット以上の時は、50で割り切れるかをチェックする
+                if (iOKCount >= 900)
+                {
+                    if (iOKCount % 50 == 0)
+                    {
+                        LblOffLine.BackColor = Color.WhiteSmoke;
+                        // 900、950、1000、1050、110、、と50単位で停止する。
+                        // シリアルデータ送信
+                        SendSerialData(PubConstClass.CMD_SEND_c);
+                        LblError.Visible = false;
+
+                        MyProcStop();
+                    }
+                }
 
                 // ヘッダー情報書込処理
                 if (!File.Exists(sFileNameForAllLog))
@@ -2403,6 +2446,9 @@ namespace QrSorterInspectionApp
 
             try
             {
+                // 背景色をリセットする
+                LblOffLine.BackColor = Color.WhiteSmoke;
+
                 if (iPreviousIndex == CmbMode.SelectedIndex)
                 {
                     // 前回値と同じなら何もせずに抜ける
@@ -2473,33 +2519,20 @@ namespace QrSorterInspectionApp
             }
         }
 
-        private void TxtBoxLabelNumber_Enter(object sender, EventArgs e)
-        {
-            //try
-            //{
-            //    if (TxtBoxLabelNumber.Text.Length >= 5)
-            //    {
-            //        TxtCheckReading.Text = TxtBoxLabelNumber.Text.Substring(0, 5);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message, "【TxtBoxLabelNumber_Enter】", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-        }
-
         private void TxtBoxLabelNumber_KeyDown(object sender, KeyEventArgs e)
         {
             try
             {
                 if (e.KeyCode == Keys.Enter)
                 {
-                    string input = TxtBoxLabelNumber.Text;
-                    string firstFive = input.Length >= 5 ? input.Substring(0, 5) : input;
-                    TxtCheckReading.Text = firstFive;
+                    SetTxtCheckReading();
 
-                    e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
-                    TxtInquiryNumber.Focus();
+                    //string input = TxtBoxLabelNumber.Text;
+                    //string firstFive = input.Length >= 5 ? input.Substring(0, 5) : input;
+                    //TxtCheckReading.Text = firstFive;
+
+                    //e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
+                    //TxtInquiryNumber.Focus();
                 }
             }
             catch (Exception ex)
@@ -2663,11 +2696,18 @@ namespace QrSorterInspectionApp
         {
             try
             {
+                // 背景色をリセットする
+                LblOffLine.BackColor = Color.WhiteSmoke;
+
                 DialogResult dialogResult = MessageBox.Show("JOBを切り替えますか？","確認",MessageBoxButtons.OKCancel,MessageBoxIcon.Question);
                 if (dialogResult == DialogResult.Cancel)
                 {
                     return;
                 }
+
+                TxtBoxLabelNumber.Enabled = true;
+                TxtInquiryNumber.Enabled = true;
+                TxtCheckReading.Enabled = true;
 
                 string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
                 sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
@@ -2688,7 +2728,8 @@ namespace QrSorterInspectionApp
                 if (e.KeyCode == Keys.Enter)
                 {
                     e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
-                    TxtCheckReading.Focus();
+                    //TxtCheckReading.Focus();
+                    BtnStartInspection.Focus();
                 }
             }
             catch (Exception ex)
@@ -2710,6 +2751,28 @@ namespace QrSorterInspectionApp
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "【TxtCheckReading_KeyDown】", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void TxtBoxLabelNumber_Leave(object sender, EventArgs e)
+        {
+            SetTxtCheckReading();
+        }
+
+        private void SetTxtCheckReading()
+        {
+            try
+            {
+                string input = TxtBoxLabelNumber.Text;
+                string firstFive = input.Length >= 5 ? input.Substring(0, 5) : input;
+                TxtCheckReading.Text = firstFive;
+
+                //e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
+                TxtInquiryNumber.Focus();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "【SetTxtCheckReading】", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
