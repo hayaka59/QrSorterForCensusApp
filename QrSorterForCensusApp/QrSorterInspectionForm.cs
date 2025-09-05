@@ -550,6 +550,8 @@ namespace QrSorterInspectionApp
         /// <param name="e"></param>
         private void TimDateTime_Tick(object sender, EventArgs e)
         {
+            int iBoxCount;
+
             try
             {
                 // 現在時刻の表示
@@ -565,8 +567,9 @@ namespace QrSorterInspectionApp
                     SetStatus(0);
                 }
 
+                iBoxCount = int.Parse(LblBox1.Text);
                 //if (int.Parse(LblBox1.Text) >= 850)
-                if (int.Parse(LblBox1.Text) >= 850)
+                if (iBoxCount >= 850)
                 {
                     if (LblOffLine.BackColor == Color.Yellow)
                     {
@@ -581,6 +584,21 @@ namespace QrSorterInspectionApp
                 {
                     LblOffLine.BackColor = Color.WhiteSmoke;
                 }
+
+                //// 900セット以上の時は、50で割り切れるかをチェックする
+                //if (iBoxCount >= 200) // 900
+                //{
+                //    if (iBox1Count % 50 == 0)
+                //    {
+                //        LblOffLine.BackColor = Color.WhiteSmoke;
+                //        // 900、950、1000、1050、110、、と50単位で停止する。
+                //        // シリアルデータ送信
+                //        SendSerialData(PubConstClass.CMD_SEND_c);
+                //        LblError.Visible = false;
+
+                //        MyProcStop();
+                //    }
+                //}
             }
             catch (Exception ex)
             {
@@ -1714,6 +1732,21 @@ namespace QrSorterInspectionApp
 
                 // 総数のカウント表示
                 LblTotalCount.Text = (iOKCount + iNGCount).ToString("#,##0");
+
+                // 900セット以上の時は、50で割り切れるかをチェックする
+                if (iOKCount >= 900)
+                {
+                    if (iOKCount % 50 == 0)
+                    {
+                        LblOffLine.BackColor = Color.WhiteSmoke;
+                        // 900、950、1000、1050、110、、と50単位で停止する。
+                        // シリアルデータ送信
+                        SendSerialData(PubConstClass.CMD_SEND_c);
+                        LblError.Visible = false;
+
+                        MyProcStop();
+                    }
+                }
 
                 // ヘッダー情報書込処理
                 if (!File.Exists(sFileNameForAllLog))
