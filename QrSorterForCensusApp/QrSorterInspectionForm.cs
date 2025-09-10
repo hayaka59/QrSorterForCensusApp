@@ -403,6 +403,8 @@ namespace QrSorterInspectionApp
 
                 // 箱ラベル番号入力にフォーカスを当てる
                 TxtBoxLabelNumber.Focus();
+
+                TxtQrReadData.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -2473,6 +2475,7 @@ namespace QrSorterInspectionApp
                     TxtBoxLabelNumber.Enabled = false;
                     TxtInquiryNumber.Enabled = false;
                     TxtCheckReading.Enabled = false;
+                    TxtQrReadData.Enabled = false;
 
                     // 受付モード
                     sProcessingModeName = "受付用";
@@ -2509,6 +2512,7 @@ namespace QrSorterInspectionApp
                     TxtBoxLabelNumber.Enabled = true;
                     TxtInquiryNumber.Enabled = true;
                     TxtCheckReading.Enabled = true;
+                    TxtQrReadData.Enabled = false;
                 }
                 LblOffLine.Text = sMessage;
 
