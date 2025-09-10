@@ -2721,6 +2721,17 @@ namespace QrSorterInspectionApp
                 sFileNameForAllLog = $"{sFolderNameForAllLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}（全件）.csv";
                 // 内部カウンタと表示をクリアする
                 ClearCounterAndDisplay();
+
+                if (CmbMode.SelectedIndex == 0)
+                {
+                    // 受付モード
+                    sProcessingModeName = "受付用";
+                }
+                else
+                {
+                    // 箱詰めモード
+                    sProcessingModeName = "箱詰め用";
+                }
             }
             catch (Exception ex)
             {
