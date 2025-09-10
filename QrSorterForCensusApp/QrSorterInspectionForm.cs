@@ -2631,7 +2631,9 @@ namespace QrSorterInspectionApp
 
                     // 手動登録モードON
                     bManualEntryFlg = true;
-                    DialogResult dialogResult = MessageBox.Show($"読取りデータ（{input}を登録しますか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+
+                    DialogResult dialogResult = MessageBox.Show($"読取りデータ（{input}）を登録しますか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                     if (dialogResult == DialogResult.Cancel)
                     {
                         TxtQrReadData.Text = "";
@@ -2646,6 +2648,7 @@ namespace QrSorterInspectionApp
                         TxtQrReadData.Focus();
                         // 手動登録モードOFF
                         bManualEntryFlg = false;
+                        bIsJobChange = false;
                     }
                     //// 手動登録モードOFF
                     //bManualEntryFlg = false;
