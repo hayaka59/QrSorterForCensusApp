@@ -651,9 +651,9 @@ namespace QrSorterInspectionApp
         }
 
         /// <summary>
-        /// 
+        /// 箱詰めモードの時の各入力の桁数チェックを行う
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True：各入力値が既定の桁数を満たす／False：入力桁数エラー</returns>
         private bool CheckNumberOfDigits()
         {
             bool bRetVal = true;
@@ -1504,14 +1504,15 @@ namespace QrSorterInspectionApp
                     SendSerialData(PubConstClass.CMD_SEND_e);
                     return;
                 }
-                if (sFolderNameForOkLog == null || sFileNameForOkLog == null)
-                {
-                    //MessageBox.Show("検査前の設定を行ってください", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    CommonModule.OutPutLogFile($"データ（{sData}）を受信したが、sFolderNameForOkLog または sFileNameForOkLog が、NULLです");
-                    return;
-                }
+                //if (sFolderNameForOkLog == null || sFileNameForOkLog == null)
+                //{
+                //    //MessageBox.Show("検査前の設定を行ってください", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    CommonModule.OutPutLogFile($"データ（{sData}）を受信したが、sFolderNameForOkLog または sFileNameForOkLog が、NULLです");
+                //    //return;
+                //}
 
-                if (sFolderNameForOkLog == "" || sFileNameForOkLog == "")
+                //if (sFolderNameForOkLog == "" || sFileNameForOkLog == "")
+                if (sFolderNameForOkLog == "" || sFileNameForOkLog == "" || sFolderNameForOkLog == null || sFileNameForOkLog == null)
                 {
                     // 受領日
                     sReceiptDate = DtpDateReceipt.Value.ToString("yyyyMMdd");
@@ -2546,7 +2547,7 @@ namespace QrSorterInspectionApp
         }
 
         /// <summary>
-        /// 
+        /// 「手動登録用のQRデータ読み取り」入力でのEnterキー押下イベント
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -2560,15 +2561,22 @@ namespace QrSorterInspectionApp
 
                     if (CmbMode.SelectedIndex == 1)
                     {
-                        // 箱詰めモードの場合
-                        // 各入力フィールドの桁数チェックを行う
+                        // 箱詰めモードの場合、各入力フィールドの桁数チェックを行う
                         if (CheckNumberOfDigits() == false)
                         {
-                            //// シリアルデータ送信
-                            //SendSerialData(PubConstClass.CMD_SEND_b);
-                            //// 検査開始時のチェック
-                            //CheckStartUp();
+                            // 各入力の桁数チェックがエラーの場合
+                            TxtQrReadData.Text = "";
                             return;
+                        }
+                        else
+                        {
+                            // 桁数チェックが、OKの場合
+                            
+                            // シリアルデータ送信
+                            //SendSerialData(PubConstClass.CMD_SEND_b);
+                            
+                            // 検査開始時のチェック
+                            CheckStartUp();
                         }
                     }
 
@@ -2712,6 +2720,11 @@ namespace QrSorterInspectionApp
             }
         }
 
+        /// <summary>
+        /// 「ログ確定」ボタン処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnJobChange_Click(object sender, EventArgs e)
         {
             try
@@ -2725,9 +2738,10 @@ namespace QrSorterInspectionApp
                     return;
                 }
 
-                TxtBoxLabelNumber.Enabled = true;
-                TxtInquiryNumber.Enabled = true;
-                TxtCheckReading.Enabled = true;
+                TxtBoxLabelNumber.Enabled = true;   // 「箱ラベル番号」入力使用可　
+                TxtInquiryNumber.Enabled = true;    // 「問い合わせ番号」入力使用可
+                TxtCheckReading.Enabled = true;     // 「箱ラベル番号」入力使用可
+                TxtQrReadData.Enabled = false;      // 「手動登録用のQRデータ読み取り」入力グレーアウト
 
                 string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
                 sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
