@@ -2558,6 +2558,20 @@ namespace QrSorterInspectionApp
                 {
                     //e.SuppressKeyPress = true; // Enterキーの「ピンッ」という音を防ぐ
 
+                    if (CmbMode.SelectedIndex == 1)
+                    {
+                        // 箱詰めモードの場合
+                        // 各入力フィールドの桁数チェックを行う
+                        if (CheckNumberOfDigits() == false)
+                        {
+                            //// シリアルデータ送信
+                            //SendSerialData(PubConstClass.CMD_SEND_b);
+                            //// 検査開始時のチェック
+                            //CheckStartUp();
+                            return;
+                        }
+                    }
+
                     string input = TxtQrReadData.Text;
                     if (!(input.Length == 16 || input.Length == 20))
                     {
@@ -2566,7 +2580,6 @@ namespace QrSorterInspectionApp
                         TxtQrReadData.Focus();
                         return;
                     }
-
 
                     if (lstPastReceivedQrData.Count > 0)
                     {
