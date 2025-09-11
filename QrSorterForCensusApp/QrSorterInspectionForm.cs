@@ -2712,6 +2712,11 @@ namespace QrSorterInspectionApp
             }
         }
 
+        /// <summary>
+        /// 「ログ確定」ボタン処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnJobChange_Click(object sender, EventArgs e)
         {
             try
@@ -2725,9 +2730,10 @@ namespace QrSorterInspectionApp
                     return;
                 }
 
-                TxtBoxLabelNumber.Enabled = true;
-                TxtInquiryNumber.Enabled = true;
-                TxtCheckReading.Enabled = true;
+                TxtBoxLabelNumber.Enabled = true;   // 「箱ラベル番号」入力使用可　
+                TxtInquiryNumber.Enabled = true;    // 「問い合わせ番号」入力使用可
+                TxtCheckReading.Enabled = true;     // 「箱ラベル番号」入力使用可
+                TxtQrReadData.Enabled = false;      // 「手動登録用のQRデータ読み取り」入力グレーアウト
 
                 string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
                 sFileNameForOkLog = $"{sFolderNameForOkLog}\\uketuke_{PubConstClass.pblMachineName}_{sReceiptDate}_{sOutPutDateTime}.csv";
