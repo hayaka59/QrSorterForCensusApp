@@ -1736,18 +1736,23 @@ namespace QrSorterInspectionApp
                 // 総数のカウント表示
                 LblTotalCount.Text = (iOKCount + iNGCount).ToString("#,##0");
 
-                // 900セット以上の時は、50で割り切れるかをチェックする
-                if (iOKCount >= 900)
-                {
-                    if (iOKCount % 50 == 0)
-                    {
-                        LblOffLine.BackColor = Color.WhiteSmoke;
-                        // 900、950、1000、1050、110、、と50単位で停止する。
-                        // シリアルデータ送信
-                        SendSerialData(PubConstClass.CMD_SEND_c);
-                        LblError.Visible = false;
 
-                        MyProcStop();
+                if (CmbMode.SelectedIndex == 1)
+                {
+                    // 箱詰めモードの時だけチェックする
+                    // 900セット以上の時は、50で割り切れるかをチェックする
+                    if (iOKCount >= 900)
+                    {
+                        if (iOKCount % 50 == 0)
+                        {
+                            LblOffLine.BackColor = Color.WhiteSmoke;
+                            // 900、950、1000、1050、110、、と50単位で停止する。
+                            // シリアルデータ送信
+                            SendSerialData(PubConstClass.CMD_SEND_c);
+                            LblError.Visible = false;
+
+                            MyProcStop();
+                        }
                     }
                 }
 
