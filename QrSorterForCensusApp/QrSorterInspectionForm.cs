@@ -569,38 +569,26 @@ namespace QrSorterInspectionApp
                     SetStatus(0);
                 }
 
-                iBoxCount = int.Parse(LblBox1.Text);
-                //if (int.Parse(LblBox1.Text) >= 850)
-                if (iBoxCount >= 850)
+                if (CmbMode.SelectedIndex == 1)
                 {
-                    if (LblOffLine.BackColor == Color.Yellow)
+                    // 箱詰めモードの時だけチェックする
+                    iBoxCount = int.Parse(LblBox1.Text);
+                    if (iBoxCount >= 850)
                     {
-                        LblOffLine.BackColor = Color.WhiteSmoke;
+                        if (LblOffLine.BackColor == Color.Yellow)
+                        {
+                            LblOffLine.BackColor = Color.WhiteSmoke;
+                        }
+                        else
+                        {
+                            LblOffLine.BackColor = Color.Yellow;
+                        }
                     }
                     else
                     {
-                        LblOffLine.BackColor = Color.Yellow;
+                        LblOffLine.BackColor = Color.WhiteSmoke;
                     }
                 }
-                else
-                {
-                    LblOffLine.BackColor = Color.WhiteSmoke;
-                }
-
-                //// 900セット以上の時は、50で割り切れるかをチェックする
-                //if (iBoxCount >= 200) // 900
-                //{
-                //    if (iBox1Count % 50 == 0)
-                //    {
-                //        LblOffLine.BackColor = Color.WhiteSmoke;
-                //        // 900、950、1000、1050、110、、と50単位で停止する。
-                //        // シリアルデータ送信
-                //        SendSerialData(PubConstClass.CMD_SEND_c);
-                //        LblError.Visible = false;
-
-                //        MyProcStop();
-                //    }
-                //}
             }
             catch (Exception ex)
             {
@@ -1504,14 +1492,7 @@ namespace QrSorterInspectionApp
                     SendSerialData(PubConstClass.CMD_SEND_e);
                     return;
                 }
-                //if (sFolderNameForOkLog == null || sFileNameForOkLog == null)
-                //{
-                //    //MessageBox.Show("検査前の設定を行ってください", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //    CommonModule.OutPutLogFile($"データ（{sData}）を受信したが、sFolderNameForOkLog または sFileNameForOkLog が、NULLです");
-                //    //return;
-                //}
 
-                //if (sFolderNameForOkLog == "" || sFileNameForOkLog == "")
                 if (sFolderNameForOkLog == "" || sFileNameForOkLog == "" || sFolderNameForOkLog == null || sFileNameForOkLog == null)
                 {
                     // 受領日
