@@ -569,6 +569,9 @@ namespace QrSorterInspectionApp
                     SetStatus(0);
                 }
 
+                if (CmbMode.SelectedIndex == 1)
+                {
+                    // 箱詰めモードの時のみ、850以上でラベル点滅させるかどうかをチェックする
                 iBoxCount = int.Parse(LblBox1.Text);
                 //if (int.Parse(LblBox1.Text) >= 850)
                 if (iBoxCount >= 850)
@@ -585,6 +588,7 @@ namespace QrSorterInspectionApp
                 else
                 {
                     LblOffLine.BackColor = Color.WhiteSmoke;
+                }
                 }
 
                 //// 900セット以上の時は、50で割り切れるかをチェックする
