@@ -572,23 +572,23 @@ namespace QrSorterInspectionApp
                 if (CmbMode.SelectedIndex == 1)
                 {
                     // 箱詰めモードの時のみ、850以上でラベル点滅させるかどうかをチェックする
-                iBoxCount = int.Parse(LblBox1.Text);
-                //if (int.Parse(LblBox1.Text) >= 850)
-                if (iBoxCount >= 850)
-                {
-                    if (LblOffLine.BackColor == Color.Yellow)
+                    iBoxCount = int.Parse(LblBox1.Text);
+                    //if (int.Parse(LblBox1.Text) >= 850)
+                    if (iBoxCount >= 850)
                     {
-                        LblOffLine.BackColor = Color.WhiteSmoke;
+                        if (LblOffLine.BackColor == Color.Yellow)
+                        {
+                            LblOffLine.BackColor = Color.WhiteSmoke;
+                        }
+                        else
+                        {
+                            LblOffLine.BackColor = Color.Yellow;
+                        }
                     }
                     else
                     {
-                        LblOffLine.BackColor = Color.Yellow;
+                        LblOffLine.BackColor = Color.WhiteSmoke;
                     }
-                }
-                else
-                {
-                    LblOffLine.BackColor = Color.WhiteSmoke;
-                }
                 }
 
                 //// 900セット以上の時は、50で割り切れるかをチェックする
@@ -1436,9 +1436,6 @@ namespace QrSorterInspectionApp
                 }
 
                 // エラーファイル名の生成
-                //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-                //sSaveFileName += sFolderNameForErrorLog + sJobFolderName + "\\";
-                //sSaveFileName = $"{sFolderNameForErrorLog}\\{sFileNameForErrorLog}";
                 sSaveFileName = $"{sFolderNameForErrorLog}\\{sFileNameForErrorLog}";
 
                 // エラー格納フォルダの存在チェック（日を跨ぐ処理の対策）
@@ -2755,6 +2752,8 @@ namespace QrSorterInspectionApp
                     // 箱詰めモード
                     sProcessingModeName = "箱詰め用";
                 }
+
+                LblConfirm.Visible = true;
             }
             catch (Exception ex)
             {
@@ -2815,6 +2814,16 @@ namespace QrSorterInspectionApp
             {
                 MessageBox.Show(ex.Message, "【SetTxtCheckReading】", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void BtnConfirm_Click(object sender, EventArgs e)
+        {
+            LblConfirm.Visible = false;
+        }
+
+        private void LblConfirm_Click(object sender, EventArgs e)
+        {
+            LblConfirm.Visible = false;
         }
     }
 }
