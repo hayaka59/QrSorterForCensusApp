@@ -128,6 +128,7 @@
             this.TxtCheckReading = new System.Windows.Forms.TextBox();
             this.ChkCDCheck = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.LblConfirm = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -1338,12 +1339,28 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "QR読取直後のデータ";
             // 
+            // LblConfirm
+            // 
+            this.LblConfirm.BackColor = System.Drawing.Color.Yellow;
+            this.LblConfirm.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.LblConfirm.Font = new System.Drawing.Font("メイリオ", 72F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LblConfirm.ForeColor = System.Drawing.Color.Red;
+            this.LblConfirm.Location = new System.Drawing.Point(12, 50);
+            this.LblConfirm.Name = "LblConfirm";
+            this.LblConfirm.Size = new System.Drawing.Size(1880, 978);
+            this.LblConfirm.TabIndex = 361;
+            this.LblConfirm.Text = "スタッカ媒体を取り除いてください！！\r\n\r\n画面タップでメッセージを閉じます。";
+            this.LblConfirm.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LblConfirm.Visible = false;
+            this.LblConfirm.Click += new System.EventHandler(this.LblConfirm_Click);
+            // 
             // QrSorterInspectionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
             this.ControlBox = false;
+            this.Controls.Add(this.LblConfirm);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.ChkCDCheck);
             this.Controls.Add(this.label11);
@@ -1558,5 +1575,6 @@
         private System.Windows.Forms.TextBox TxtQrReadData;
         private System.Windows.Forms.CheckBox ChkCDCheck;
         private System.Windows.Forms.GroupBox groupBox3;
+        internal System.Windows.Forms.Label LblConfirm;
     }
 }

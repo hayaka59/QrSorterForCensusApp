@@ -571,8 +571,9 @@ namespace QrSorterInspectionApp
 
                 if (CmbMode.SelectedIndex == 1)
                 {
-                    // 箱詰めモードの時だけチェックする
+                    // 箱詰めモードの時のみ、850以上でラベル点滅させるかどうかをチェックする
                     iBoxCount = int.Parse(LblBox1.Text);
+                    //if (int.Parse(LblBox1.Text) >= 850)
                     if (iBoxCount >= 850)
                     {
                         if (LblOffLine.BackColor == Color.Yellow)
@@ -589,6 +590,21 @@ namespace QrSorterInspectionApp
                         LblOffLine.BackColor = Color.WhiteSmoke;
                     }
                 }
+
+                //// 900セット以上の時は、50で割り切れるかをチェックする
+                //if (iBoxCount >= 200) // 900
+                //{
+                //    if (iBox1Count % 50 == 0)
+                //    {
+                //        LblOffLine.BackColor = Color.WhiteSmoke;
+                //        // 900、950、1000、1050、110、、と50単位で停止する。
+                //        // シリアルデータ送信
+                //        SendSerialData(PubConstClass.CMD_SEND_c);
+                //        LblError.Visible = false;
+
+                //        MyProcStop();
+                //    }
+                //}
             }
             catch (Exception ex)
             {
@@ -1419,31 +1435,15 @@ namespace QrSorterInspectionApp
                     sErrorData += "未定義エラー番号,未定義のエラー番号です。";
                 }
 
-                //// エラーフォルダ及びエラーファイル名のチェック
-                //if (sFolderNameForErrorLog == null || sFileNameForErrorLog == null)
-                //{
-                //    // NULLの場合
-                //    sJobFolderName = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-                //    sJobFolderName += $"エラーログ\\{sProcessingDate}\\";
-                //    //sJobFolderName = $"C:\\QRソーター\\エラーログ\\20250816";
-                //    sFileNameForErrorLog = $"処理開始前_errorlog_{sReceiptDate}_{DateTime.Now.ToString("yyyyMMdd")}.csv" + "000000.csv";
-                //    CommonModule.OutPutLogFile($"エラーファイル名を作成しました：{sFileNameForErrorLog}");
-                //    //string sFolderName = "";
-                //    //sFolderName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-
-                //    //string sFolderName += sFolderNameForErrorLog + sJobFolderName + "\\";
-                //    if (!Directory.Exists(sFolderNameForErrorLog))
-                //    {
-                //        Directory.CreateDirectory(sFolderNameForErrorLog);
-                //        CommonModule.OutPutLogFile($"エラーフォルダを作成しました：{sFolderNameForErrorLog}");
-                //    }
-                //}
-
                 // エラーファイル名の生成
-                //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-                //sSaveFileName += sFolderNameForErrorLog + sJobFolderName + "\\";
-                //sSaveFileName = $"{sFolderNameForErrorLog}\\{sFileNameForErrorLog}";
                 sSaveFileName = $"{sFolderNameForErrorLog}\\{sFileNameForErrorLog}";
+
+                // エラー格納フォルダの存在チェック（日を跨ぐ処理の対策）
+                if (Directory.Exists(sFolderNameForErrorLog) == false)
+                {
+                    Directory.CreateDirectory(sFolderNameForErrorLog);
+                    CommonModule.OutPutLogFile($"エラーフォルダを作成しました（処理中）：{sFolderNameForErrorLog}");
+                }
 
                 // エラーデータ書込処理
                 using (StreamWriter sw = new StreamWriter(sSaveFileName, true, Encoding.Default))
@@ -2745,6 +2745,8 @@ namespace QrSorterInspectionApp
                     // 箱詰めモード
                     sProcessingModeName = "箱詰め用";
                 }
+
+                LblConfirm.Visible = true;
             }
             catch (Exception ex)
             {
@@ -2805,6 +2807,16 @@ namespace QrSorterInspectionApp
             {
                 MessageBox.Show(ex.Message, "【SetTxtCheckReading】", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void BtnConfirm_Click(object sender, EventArgs e)
+        {
+            LblConfirm.Visible = false;
+        }
+
+        private void LblConfirm_Click(object sender, EventArgs e)
+        {
+            LblConfirm.Visible = false;
         }
     }
 }
