@@ -1492,14 +1492,7 @@ namespace QrSorterInspectionApp
                     SendSerialData(PubConstClass.CMD_SEND_e);
                     return;
                 }
-                //if (sFolderNameForOkLog == null || sFileNameForOkLog == null)
-                //{
-                //    //MessageBox.Show("検査前の設定を行ってください", "確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //    CommonModule.OutPutLogFile($"データ（{sData}）を受信したが、sFolderNameForOkLog または sFileNameForOkLog が、NULLです");
-                //    //return;
-                //}
 
-                //if (sFolderNameForOkLog == "" || sFileNameForOkLog == "")
                 if (sFolderNameForOkLog == "" || sFileNameForOkLog == "" || sFolderNameForOkLog == null || sFileNameForOkLog == null)
                 {
                     // 受領日
