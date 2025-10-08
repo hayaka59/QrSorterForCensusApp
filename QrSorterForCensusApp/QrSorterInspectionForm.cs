@@ -1435,31 +1435,18 @@ namespace QrSorterInspectionApp
                     sErrorData += "未定義エラー番号,未定義のエラー番号です。";
                 }
 
-                //// エラーフォルダ及びエラーファイル名のチェック
-                //if (sFolderNameForErrorLog == null || sFileNameForErrorLog == null)
-                //{
-                //    // NULLの場合
-                //    sJobFolderName = CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-                //    sJobFolderName += $"エラーログ\\{sProcessingDate}\\";
-                //    //sJobFolderName = $"C:\\QRソーター\\エラーログ\\20250816";
-                //    sFileNameForErrorLog = $"処理開始前_errorlog_{sReceiptDate}_{DateTime.Now.ToString("yyyyMMdd")}.csv" + "000000.csv";
-                //    CommonModule.OutPutLogFile($"エラーファイル名を作成しました：{sFileNameForErrorLog}");
-                //    //string sFolderName = "";
-                //    //sFolderName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
-
-                //    //string sFolderName += sFolderNameForErrorLog + sJobFolderName + "\\";
-                //    if (!Directory.Exists(sFolderNameForErrorLog))
-                //    {
-                //        Directory.CreateDirectory(sFolderNameForErrorLog);
-                //        CommonModule.OutPutLogFile($"エラーフォルダを作成しました：{sFolderNameForErrorLog}");
-                //    }
-                //}
-
                 // エラーファイル名の生成
                 //sSaveFileName += CommonModule.IncludeTrailingPathDelimiter(PubConstClass.pblInternalTranFolder);
                 //sSaveFileName += sFolderNameForErrorLog + sJobFolderName + "\\";
                 //sSaveFileName = $"{sFolderNameForErrorLog}\\{sFileNameForErrorLog}";
                 sSaveFileName = $"{sFolderNameForErrorLog}\\{sFileNameForErrorLog}";
+
+                // エラー格納フォルダの存在チェック（日を跨ぐ処理の対策）
+                if (Directory.Exists(sFolderNameForErrorLog) == false)
+                {
+                    Directory.CreateDirectory(sFolderNameForErrorLog);
+                    CommonModule.OutPutLogFile($"エラーフォルダを作成しました（処理中）：{sFolderNameForErrorLog}");
+                }
 
                 // エラーデータ書込処理
                 using (StreamWriter sw = new StreamWriter(sSaveFileName, true, Encoding.Default))
