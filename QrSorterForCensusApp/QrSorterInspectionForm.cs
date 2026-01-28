@@ -2757,6 +2757,10 @@ namespace QrSorterInspectionApp
                 }
 
                 LblConfirm.Visible = true;
+                // サイズと位置の設定
+                LblConfirm.Width = 1880;
+                LblConfirm.Height = 978;
+                LblConfirm.Location = new Point(10, 50);
             }
             catch (Exception ex)
             {
