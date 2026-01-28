@@ -42,7 +42,7 @@ namespace QrSorterInspectionApp
         public const string CMD_RECIEVE_L = "L";                                // QR読取り直後のデータ送信コマンド
         public const string CMD_RECIEVE_T = "T";                                // DIP-SW情報要求コマンド
 
-        public const string DEF_VERSION = "Ver.0.9.0.0";                        // バージョン情報（メジャー.マイナー.ビルド.リビジョン） 
+        public const string DEF_VERSION = "Ver.0.9.0.1";                        // バージョン情報（メジャー.マイナー.ビルド.リビジョン） 
         public static object objSyncHist;                                       // 排他制御用オブジェクト（操作ログ書込用）
 
         /// <summary>
