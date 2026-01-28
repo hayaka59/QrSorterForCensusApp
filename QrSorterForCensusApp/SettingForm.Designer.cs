@@ -218,7 +218,6 @@
             this.groupBox1.Controls.Add(this.NmUpDnPropertyIdKeta);
             this.groupBox1.Controls.Add(this.label27);
             this.groupBox1.Controls.Add(this.label28);
-            this.groupBox1.Enabled = false;
             this.groupBox1.Location = new System.Drawing.Point(395, 163);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(734, 239);
@@ -1721,7 +1720,6 @@
             // 
             this.RchTxtQrInfo.BackColor = System.Drawing.Color.White;
             this.RchTxtQrInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RchTxtQrInfo.Enabled = false;
             this.RchTxtQrInfo.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.RchTxtQrInfo.Location = new System.Drawing.Point(28, 416);
             this.RchTxtQrInfo.Name = "RchTxtQrInfo";
@@ -1734,7 +1732,6 @@
             // 
             // NumUpDwnQrAllDigit
             // 
-            this.NumUpDwnQrAllDigit.Enabled = false;
             this.NumUpDwnQrAllDigit.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.NumUpDwnQrAllDigit.Location = new System.Drawing.Point(146, 380);
             this.NumUpDwnQrAllDigit.Maximum = new decimal(new int[] {
