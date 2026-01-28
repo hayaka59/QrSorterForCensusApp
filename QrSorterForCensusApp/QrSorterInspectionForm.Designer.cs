@@ -1345,9 +1345,9 @@
             this.LblConfirm.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.LblConfirm.Font = new System.Drawing.Font("メイリオ", 72F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.LblConfirm.ForeColor = System.Drawing.Color.Red;
-            this.LblConfirm.Location = new System.Drawing.Point(12, 50);
+            this.LblConfirm.Location = new System.Drawing.Point(14, 454);
             this.LblConfirm.Name = "LblConfirm";
-            this.LblConfirm.Size = new System.Drawing.Size(1880, 978);
+            this.LblConfirm.Size = new System.Drawing.Size(1880, 152);
             this.LblConfirm.TabIndex = 361;
             this.LblConfirm.Text = "スタッカ媒体を取り除いてください！！\r\n\r\n画面タップでメッセージを閉じます。";
             this.LblConfirm.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

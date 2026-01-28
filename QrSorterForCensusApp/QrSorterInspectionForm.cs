@@ -407,6 +407,13 @@ namespace QrSorterInspectionApp
                 TxtBoxLabelNumber.Focus();
 
                 TxtQrReadData.Enabled = false;
+
+                // CDチェックは使用しない
+                ChkCDCheck.Checked = false;
+                // 初期表示は「受付モード」とする
+                CmbMode.SelectedIndex = 0;
+                // モード切り替え不可とする
+                CmbMode.Enabled= false;
             }
             catch (Exception ex)
             {
@@ -2558,12 +2565,12 @@ namespace QrSorterInspectionApp
                     return;
                 }
 
-                DialogResult dialogResult = MessageBox.Show($"モードを「{CmbMode.Text}」に切り替えますか？","【モード切り替え確認】", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-                if (dialogResult == DialogResult.Cancel)
-                {
-                    CmbMode.SelectedIndex = iPreviousIndex;
-                    return;
-                }
+                //DialogResult dialogResult = MessageBox.Show($"モードを「{CmbMode.Text}」に切り替えますか？","【モード切り替え確認】", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                //if (dialogResult == DialogResult.Cancel)
+                //{
+                //    CmbMode.SelectedIndex = iPreviousIndex;
+                //    return;
+                //}
 
                 iPreviousIndex = CmbMode.SelectedIndex;
 
@@ -2861,6 +2868,10 @@ namespace QrSorterInspectionApp
                 }
 
                 LblConfirm.Visible = true;
+                // サイズと位置の設定
+                LblConfirm.Width = 1880;
+                LblConfirm.Height = 978;
+                LblConfirm.Location = new Point(10, 50);
             }
             catch (Exception ex)
             {
