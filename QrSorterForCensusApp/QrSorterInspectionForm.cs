@@ -882,12 +882,15 @@ namespace QrSorterInspectionApp
         {
             try
             {
+
+                BtnJobChange.Enabled = bEnable;
+
                 BtnJobSelect.Enabled = bEnable;
                 DtpDateReceipt.Enabled = bEnable;
                 CmbNonDeliveryReasonSorting1.Enabled = bEnable;
                 CmbNonDeliveryReasonSorting2.Enabled = bEnable;
                 BtnSetting.Enabled = bEnable;
-                BtnStartInspection.Enabled = bEnable;
+                BtnStartInspection.Enabled = bEnable;   
                 BtnClose.Enabled = bEnable;
 
                 BtnCounterClear1.Visible = bEnable;
