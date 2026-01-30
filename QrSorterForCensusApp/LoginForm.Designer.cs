@@ -98,9 +98,9 @@
             // 
             this.LblVersion.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.LblVersion.ForeColor = System.Drawing.Color.Blue;
-            this.LblVersion.Location = new System.Drawing.Point(453, 274);
+            this.LblVersion.Location = new System.Drawing.Point(440, 274);
             this.LblVersion.Name = "LblVersion";
-            this.LblVersion.Size = new System.Drawing.Size(130, 25);
+            this.LblVersion.Size = new System.Drawing.Size(140, 25);
             this.LblVersion.TabIndex = 10;
             this.LblVersion.Text = "LblVersion";
             this.LblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
