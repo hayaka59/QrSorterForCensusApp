@@ -209,6 +209,7 @@ namespace QrSorterInspectionApp
                 #endregion
 
                 LblQrReadData.Text = "";
+                LblSelectedFilePath.Text = "";
                 bIsJobChange = false;
 
                 LstSettingInfomation.Items.Clear();
@@ -2080,6 +2081,8 @@ namespace QrSorterInspectionApp
             {
                 // 固定の国勢調査用JOB設定ファイルを読み込み 
                 string sSelectedFile = CommonModule.IncludeTrailingPathDelimiter(Application.StartupPath) + @"国勢調査用JOB設定.csv";
+                LblSelectedFilePath.Text = sSelectedFile;
+
 
                 string[] sArray = sSelectedFile.Split('\\');
                 // ファイル名のみを表示する
@@ -2187,6 +2190,8 @@ namespace QrSorterInspectionApp
                     // 「設定」ボタン使用可
                     BtnSetting.Enabled = true;
                     PubConstClass.sJobFileNameFromInspectionForm = sSelectedFile;
+                    
+                    LblSelectedFilePath.Text = sSelectedFile;
 
                     // 内部カウンタと表示をクリアする
                     ClearCounterAndDisplay();
@@ -2845,9 +2850,9 @@ namespace QrSorterInspectionApp
                     return;
                 }
 
-                TxtBoxLabelNumber.Enabled = true;   // 「箱ラベル番号」入力使用可　
-                TxtInquiryNumber.Enabled = true;    // 「問い合わせ番号」入力使用可
-                TxtCheckReading.Enabled = true;     // 「箱ラベル番号」入力使用可
+                //TxtBoxLabelNumber.Enabled = true;   // 「箱ラベル番号」入力使用可　
+                //TxtInquiryNumber.Enabled = true;    // 「問い合わせ番号」入力使用可
+                //TxtCheckReading.Enabled = true;     // 「箱ラベル番号」入力使用可
                 TxtQrReadData.Enabled = false;      // 「手動登録用のQRデータ読み取り」入力グレーアウト
 
                 string sOutPutDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
