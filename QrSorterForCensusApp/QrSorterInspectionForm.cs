@@ -1790,9 +1790,9 @@ namespace QrSorterInspectionApp
                 if (sPreviousQRdata != "")
                 {
                     // 前回データが存在する場合
-                    if (sPreviousQRdata == sQrData)
+                    if (sPreviousQRdata == sQrData && bIsDuplicateCheck == true)
                     {
-                        CommonModule.OutPutLogFile($"重複データ：{sQrData}");
+                        CommonModule.OutPutLogFile($"■直前のLコマンドと同じデータ（重複データ■）：{sQrData}");
                         // シリアルデータ送信（重複エラー発生）
                         SendSerialData(PubConstClass.CMD_SEND_g1);
                     }
