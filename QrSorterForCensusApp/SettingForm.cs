@@ -1078,6 +1078,8 @@ namespace QrSorterInspectionApp
                         LblSelecttedFolder.Text += sArray[iIndex] + "\\";
                     }
 
+                    LblSelecttedFolder.Text = sSelectedFile;
+
                     Properties.Settings.Default.SaveFolder = LblSelecttedFolder.Text;
                     Properties.Settings.Default.Save();
 
