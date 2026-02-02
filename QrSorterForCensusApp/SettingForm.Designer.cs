@@ -1958,16 +1958,14 @@
             // 
             // LblSelecttedFolder
             // 
-            this.LblSelecttedFolder.BackColor = System.Drawing.Color.White;
-            this.LblSelecttedFolder.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LblSelecttedFolder.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.LblSelecttedFolder.Font = new System.Drawing.Font("メイリオ", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.LblSelecttedFolder.ForeColor = System.Drawing.Color.Black;
-            this.LblSelecttedFolder.Location = new System.Drawing.Point(23, 230);
+            this.LblSelecttedFolder.Location = new System.Drawing.Point(79, 230);
             this.LblSelecttedFolder.Name = "LblSelecttedFolder";
-            this.LblSelecttedFolder.Size = new System.Drawing.Size(360, 59);
+            this.LblSelecttedFolder.Size = new System.Drawing.Size(223, 108);
             this.LblSelecttedFolder.TabIndex = 327;
             this.LblSelecttedFolder.Text = "LblSelecttedFolder";
-            this.LblSelecttedFolder.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.LblSelecttedFolder.Visible = false;
             // 
             // label10
             // 

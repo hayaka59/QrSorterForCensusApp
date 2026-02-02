@@ -1495,7 +1495,7 @@ namespace QrSorterInspectionApp
             string sLogData = "";
             string sWriteDate;
             string sWriteTime;
-            string sSaveFileName;
+            //string sSaveFileName;
             string DQ = "\"";
 
             try
