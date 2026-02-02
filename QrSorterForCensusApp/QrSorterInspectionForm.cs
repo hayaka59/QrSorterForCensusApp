@@ -402,7 +402,7 @@ namespace QrSorterInspectionApp
                 }
 
                 //　固定のジョブファイル（国勢調査用JOB設定.csv）の読込処理
-                LoadingFixedJobFile();
+                //LoadingFixedJobFile();
 
                 // 箱ラベル番号入力にフォーカスを当てる
                 TxtBoxLabelNumber.Focus();
@@ -1789,7 +1789,7 @@ namespace QrSorterInspectionApp
 
                 if (sPreviousQRdata != "")
                 {
-                    // 前回データが存在する場合
+                    // 前回データが存在する場合（かつ重複フラグがONの場合）
                     if (sPreviousQRdata == sQrData && bIsDuplicateCheck == true)
                     {
                         CommonModule.OutPutLogFile($"■直前のLコマンドと同じデータ（重複データ■）：{sQrData}");
@@ -1802,35 +1802,6 @@ namespace QrSorterInspectionApp
                         {
                             // 重複チェック
                             DuplicateCheck(sQrData);
-                            #region 重複チェック
-                            //if (bIsDuplicateCheck)
-                            //{
-                            //    Stopwatch sw = new Stopwatch();
-                            //    sw.Start();
-                            //    bool bFind = lstPastReceivedQrData.Contains(sQrData);
-                            //    sw.Stop();
-
-                            //    if (bFind)
-                            //    {
-                            //        CommonModule.OutPutLogFile($"重複データ：{sQrData}");
-                            //        // シリアルデータ送信（重複エラー発生）
-                            //        SendSerialData(PubConstClass.CMD_SEND_g1);
-                            //    }
-                            //    else
-                            //    {
-                            //        CommonModule.OutPutLogFile($"重複データ無し：{lstPastReceivedQrData[0]}");
-                            //        // シリアルデータ送信（重複エラー発生）
-                            //        SendSerialData(PubConstClass.CMD_SEND_g0);
-                            //    }
-                            //    CommonModule.OutPutLogFile($"{lstPastReceivedQrData.Count:#,###,##0}件の検索処理時間: {sw.Elapsed.TotalMilliseconds}ミリ秒");
-                            //}
-                            //else
-                            //{
-                            //    CommonModule.OutPutLogFile($"重複チェック無しモード：{sQrData}");
-                            //    // シリアルデータ送信（重複エラー発生）
-                            //    SendSerialData(PubConstClass.CMD_SEND_g0);
-                            //}
-                            #endregion
                         }
                         else
                         {
@@ -1851,35 +1822,6 @@ namespace QrSorterInspectionApp
                     {
                         // 重複チェック
                         DuplicateCheck(sQrData);
-                        #region 重複チェック
-                        //if (bIsDuplicateCheck)
-                        //{
-                        //    Stopwatch sw = new Stopwatch();
-                        //    sw.Start();
-                        //    bool bFind = lstPastReceivedQrData.Contains(sQrData);
-                        //    sw.Stop();
-
-                        //    if (bFind)
-                        //    {
-                        //        CommonModule.OutPutLogFile($"重複データ：{sQrData}");
-                        //        // シリアルデータ送信（重複エラー発生）
-                        //        SendSerialData(PubConstClass.CMD_SEND_g1);
-                        //    }
-                        //    else
-                        //    {
-                        //        CommonModule.OutPutLogFile($"重複データ無し：{lstPastReceivedQrData[0]}");
-                        //        // シリアルデータ送信（重複エラー発生）
-                        //        SendSerialData(PubConstClass.CMD_SEND_g0);
-                        //    }
-                        //    CommonModule.OutPutLogFile($"{lstPastReceivedQrData.Count:#,###,##0}件の検索処理時間: {sw.Elapsed.TotalMilliseconds}ミリ秒");
-                        //}
-                        //else
-                        //{
-                        //    CommonModule.OutPutLogFile($"重複チェック無しモード：{sQrData}");
-                        //    // シリアルデータ送信（重複エラー発生）
-                        //    SendSerialData(PubConstClass.CMD_SEND_g0);
-                        //}
-                        #endregion
                     }
                     else
                     {
