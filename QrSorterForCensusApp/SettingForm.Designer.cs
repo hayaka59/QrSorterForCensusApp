@@ -154,6 +154,7 @@
             this.LblTitle = new System.Windows.Forms.Label();
             this.LblVersion = new System.Windows.Forms.Label();
             this.GrpFeederSetting = new System.Windows.Forms.GroupBox();
+            this.LblSelectedFilePath = new System.Windows.Forms.Label();
             this.LblSelecttedFolder = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.TxtReadingPosition = new System.Windows.Forms.TextBox();
@@ -164,7 +165,6 @@
             this.BtnJobSelect = new System.Windows.Forms.Button();
             this.BtnUpdate = new System.Windows.Forms.Button();
             this.BtnDelete = new System.Windows.Forms.Button();
-            this.LblSelectedFilePath = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NmUpDnManagementNoKeta)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NmUpDnManagementNoStart)).BeginInit();
@@ -219,6 +219,7 @@
             this.groupBox1.Controls.Add(this.NmUpDnPropertyIdKeta);
             this.groupBox1.Controls.Add(this.label27);
             this.groupBox1.Controls.Add(this.label28);
+            this.groupBox1.Enabled = false;
             this.groupBox1.Location = new System.Drawing.Point(395, 163);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(734, 239);
@@ -1958,6 +1959,17 @@
             this.GrpFeederSetting.TabStop = false;
             this.GrpFeederSetting.Text = "QRフィーダー設定";
             // 
+            // LblSelectedFilePath
+            // 
+            this.LblSelectedFilePath.BackColor = System.Drawing.SystemColors.Control;
+            this.LblSelectedFilePath.Font = new System.Drawing.Font("メイリオ", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LblSelectedFilePath.ForeColor = System.Drawing.Color.Black;
+            this.LblSelectedFilePath.Location = new System.Drawing.Point(79, 209);
+            this.LblSelectedFilePath.Name = "LblSelectedFilePath";
+            this.LblSelectedFilePath.Size = new System.Drawing.Size(223, 108);
+            this.LblSelectedFilePath.TabIndex = 363;
+            this.LblSelectedFilePath.Text = "LblSelectedFilePath";
+            // 
             // LblSelecttedFolder
             // 
             this.LblSelecttedFolder.BackColor = System.Drawing.Color.White;
@@ -2088,17 +2100,6 @@
             this.BtnDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.BtnDelete.UseVisualStyleBackColor = true;
             this.BtnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
-            // 
-            // LblSelectedFilePath
-            // 
-            this.LblSelectedFilePath.BackColor = System.Drawing.SystemColors.Control;
-            this.LblSelectedFilePath.Font = new System.Drawing.Font("メイリオ", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.LblSelectedFilePath.ForeColor = System.Drawing.Color.Black;
-            this.LblSelectedFilePath.Location = new System.Drawing.Point(79, 209);
-            this.LblSelectedFilePath.Name = "LblSelectedFilePath";
-            this.LblSelectedFilePath.Size = new System.Drawing.Size(223, 108);
-            this.LblSelectedFilePath.TabIndex = 363;
-            this.LblSelectedFilePath.Text = "LblSelectedFilePath";
             // 
             // SettingForm
             // 
